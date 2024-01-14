@@ -1,8 +1,6 @@
+/// Dock Router Library
+library dock_router;
 
-import 'dock_router_platform_interface.dart';
-
-class DockRouter {
-  Future<String?> getPlatformVersion() {
-    return DockRouterPlatform.instance.getPlatformVersion();
-  }
-}
+export 'src/page/dock_page.dart';
+export 'src/route/dock_routes.dart';
+export 'src/router/dock_router.dart';
