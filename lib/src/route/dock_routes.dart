@@ -1,30 +1,59 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dock_router/src/page/dock_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-abstract class DockRouteBase<T> {
-  DockPageBase<T> get page;
+class DockRoute<T> {
+  DockRoute({
+    required this.name,
+    required Widget child,
+    this.initial = false,
+    this.onExit,
+    this.allowSnapshotting = true,
+    this.fullscreenDialog = false,
+    this.barrierDismissible = false,
+  }) : assert(Platform.isAndroid || Platform.isIOS, 'DockRouter only supports Android and iOS') {
+    page = Platform.isAndroid
+        ? DockMaterialPage<T>(
+            name: name,
+            child: child,
+            allowSnapshotting: allowSnapshotting,
+            fullscreenDialog: fullscreenDialog,
+            barrierDismissible: barrierDismissible,
+            onExit: onExit,
+          )
+        : DockCupertinoPage<T>(
+            name: name,
+            child: child,
+            allowSnapshotting: allowSnapshotting,
+            fullscreenDialog: fullscreenDialog,
+            barrierDismissible: barrierDismissible,
+            onExit: onExit,
+          );
+  }
 
-  Completer<Object>? completer;
+  final String name;
+
+  final bool initial;
+  final bool fullscreenDialog;
+  final bool allowSnapshotting;
+  final bool barrierDismissible;
+
+  late final DockPage<T> page;
+  final FutureOr<bool> Function(BuildContext)? onExit;
 }
 
-class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> implements DockRouteBase<T> {
+class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
   DockMaterialRoute({
-    required DockMaterialPage<T> page,
+    required this.page,
     super.allowSnapshotting,
     super.barrierDismissible,
     super.fullscreenDialog,
   }) : super(settings: page) {
-    assert(opaque);
+    assert(opaque, 'DockMaterialRoute must be opaque');
   }
-
-  @override
-  DockMaterialPage<T> get page => settings as DockMaterialPage<T>;
-
-  @override
-  Completer<Object>? completer;
 
   @override
   Widget buildContent(BuildContext context) => page.child;
@@ -37,20 +66,19 @@ class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
 
   @override
   String get debugLabel => '${super.debugLabel}(${page.name})';
+
+  final DockMaterialPage<T> page;
 }
 
-class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> implements DockRouteBase<T> {
+class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   DockCupertinoRoute({
-    required DockCupertinoPage<T> page,
+    required this.page,
     super.allowSnapshotting,
     super.barrierDismissible,
     super.fullscreenDialog,
   }) : super(settings: page) {
-    assert(opaque);
+    assert(opaque, 'DockCupertinoRoute must be opaque');
   }
-
-  @override
-  DockCupertinoPage<T> get page => settings as DockCupertinoPage<T>;
 
   @override
   Widget buildContent(BuildContext context) => page.child;
@@ -67,6 +95,5 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
   @override
   String get debugLabel => '${super.debugLabel}(${page.name})';
 
-  @override
-  Completer<Object>? completer;
+  final DockCupertinoPage<T> page;
 }

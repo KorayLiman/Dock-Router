@@ -1,35 +1,51 @@
 import 'dart:async';
 
 import 'package:dock_router/src/route/dock_routes.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 typedef ExitCallback = FutureOr<bool> Function(BuildContext context);
 
-abstract class DockPageBase<T> extends Page<T> {
-  const DockPageBase({
+abstract class DockPage<T> extends Page<T> {
+  DockPage({
     super.key,
     super.name,
     super.arguments,
     super.restorationId,
+    this.onExit,
   });
 
-  bool get initial;
+  final _popCompleter = Completer<T?>();
 
-  String get pageName;
+  Future<T?> get waitForPop => _popCompleter.future;
 
-  LocalKey get pageKey;
+  void completePop(T? result) {
+    assert(!_popCompleter.isCompleted, '''
+  Pop Completer is completed already
+  This is a bug, please report it to @KorayLiman)''');
+    _popCompleter.complete(result);
+  }
+
+  bool get allowSnapshotting;
+
+  bool get barrierDismissible;
+
+  bool get fullscreenDialog;
+  bool get maintainState;
+
+  final FutureOr<bool> Function(BuildContext)? onExit;
 }
 
-class DockCupertinoPage<T> extends DockPageBase<T> {
+class DockCupertinoPage<T> extends DockPage<T> {
   /// Creates a cupertino page.
   DockCupertinoPage({
     required this.child,
-    this.initial = false,
+    // this.initial = false,
+    super.onExit,
     this.maintainState = true,
     this.title,
     this.fullscreenDialog = false,
     this.allowSnapshotting = true,
+    this.barrierDismissible = false,
     super.name,
     super.arguments,
     super.restorationId,
@@ -39,41 +55,39 @@ class DockCupertinoPage<T> extends DockPageBase<T> {
 
   final String? title;
 
+  @override
   final bool maintainState;
-
-  final bool fullscreenDialog;
-
-  final bool allowSnapshotting;
 
   @override
   DockCupertinoRoute<T> createRoute(BuildContext context) {
     return DockCupertinoRoute(
       page: this,
       allowSnapshotting: allowSnapshotting,
+      barrierDismissible: barrierDismissible,
+      fullscreenDialog: fullscreenDialog,
     );
   }
 
   @override
-  final bool initial;
+  final bool allowSnapshotting;
 
   @override
-  LocalKey get pageKey => key!;
+  final bool barrierDismissible;
 
   @override
-  String get pageName {
-    assert(name != null, 'name of page must not be null');
-    return name!;
-  }
+  final bool fullscreenDialog;
 }
 
-class DockMaterialPage<T> extends DockPageBase<T> {
+class DockMaterialPage<T> extends DockPage<T> {
   /// Creates a material page.
   DockMaterialPage({
     required this.child,
-    this.initial = false,
+    super.onExit,
+    // this.initial = false,
     this.maintainState = true,
     this.fullscreenDialog = false,
     this.allowSnapshotting = true,
+    this.barrierDismissible = false,
     super.name,
     super.arguments,
     super.restorationId,
@@ -81,26 +95,25 @@ class DockMaterialPage<T> extends DockPageBase<T> {
 
   final Widget child;
 
+  @override
   final bool maintainState;
 
-  final bool fullscreenDialog;
-
+  @override
   final bool allowSnapshotting;
 
   @override
-  final bool initial;
+  final bool barrierDismissible;
 
   @override
-  Route<T> createRoute(BuildContext context) {
-    return DockMaterialRoute(page: this, allowSnapshotting: allowSnapshotting);
-  }
+  final bool fullscreenDialog;
 
   @override
-  LocalKey get pageKey => key!;
-
-  @override
-  String get pageName {
-    assert(name != null, 'name of page must not be null');
-    return name!;
+  DockMaterialRoute<T> createRoute(BuildContext context) {
+    return DockMaterialRoute(
+      page: this,
+      allowSnapshotting: allowSnapshotting,
+      barrierDismissible: barrierDismissible,
+      fullscreenDialog: fullscreenDialog,
+    );
   }
 }

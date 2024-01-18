@@ -9,7 +9,7 @@ class DockNavigator extends StatefulWidget {
     required this.onPopPage,
   }) : super(key: key);
 
-  final List<DockPageBase<Object>> pages;
+  final List<DockPage<Object>> pages;
   final GlobalKey<NavigatorState> navigatorKey;
   final bool Function(Route<dynamic> route, dynamic result) onPopPage;
 
