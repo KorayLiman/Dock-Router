@@ -8,14 +8,29 @@ import 'package:flutter/material.dart';
 class DockRoute<T> {
   DockRoute({
     required this.name,
-    required Widget child,
+    required this.child,
     this.initial = false,
     this.onExit,
     this.allowSnapshotting = true,
     this.fullscreenDialog = false,
     this.barrierDismissible = false,
-  }) : assert(Platform.isAndroid || Platform.isIOS, 'DockRouter only supports Android and iOS') {
-    page = Platform.isAndroid
+    this.maintainState = true,
+    this.restorationId,
+  }) : assert(Platform.isAndroid || Platform.isIOS, 'DockRouter only supports Android and iOS');
+
+  final String name;
+  final Widget child;
+  final bool initial;
+  final bool fullscreenDialog;
+  final bool allowSnapshotting;
+  final bool barrierDismissible;
+  final bool maintainState;
+  final String? restorationId;
+
+  final FutureOr<bool> Function(BuildContext)? onExit;
+
+  DockPage<T> createPage([Object? arguments]) {
+    return Platform.isAndroid
         ? DockMaterialPage<T>(
             name: name,
             child: child,
@@ -23,6 +38,9 @@ class DockRoute<T> {
             fullscreenDialog: fullscreenDialog,
             barrierDismissible: barrierDismissible,
             onExit: onExit,
+            restorationId: restorationId,
+            maintainState: maintainState,
+            arguments: arguments,
           )
         : DockCupertinoPage<T>(
             name: name,
@@ -31,18 +49,11 @@ class DockRoute<T> {
             fullscreenDialog: fullscreenDialog,
             barrierDismissible: barrierDismissible,
             onExit: onExit,
+            restorationId: restorationId,
+            maintainState: maintainState,
+            arguments: arguments,
           );
   }
-
-  final String name;
-
-  final bool initial;
-  final bool fullscreenDialog;
-  final bool allowSnapshotting;
-  final bool barrierDismissible;
-
-  late final DockPage<T> page;
-  final FutureOr<bool> Function(BuildContext)? onExit;
 }
 
 class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {

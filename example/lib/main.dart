@@ -14,7 +14,7 @@ DockRouter router = DockRouter(
                 body: Center(
                   child: TextButton(
                     onPressed: () async {
-                      final result = await router.push('/settings');
+                      final result = await router.push('/settings', arguments: 123);
                       print("result: $result");
                     },
                     child: const Text('Home'),
@@ -33,6 +33,7 @@ DockRouter router = DockRouter(
                       Builder(builder: (context) {
                         return TextButton(
                           onPressed: () {
+                            print(ModalRoute.of(context).);
                             router.pop('result from settings');
                           },
                           child: const Text('Pop'),

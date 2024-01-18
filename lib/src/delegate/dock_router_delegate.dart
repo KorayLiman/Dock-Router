@@ -12,7 +12,7 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
   DockRouterDelegate(this._router, this._initialRoutes) {
     final initialPageList = _initialRoutes().where((element) => element.initial).toList();
     assert(initialPageList.length == 1, 'There should be exactly one initial page');
-    _history.add(initialPageList.first.page);
+    _history.add(initialPageList.first.createPage());
     addListener(() {
       _dockNavigatorStateKey.currentState?.rebuild();
     });
@@ -96,7 +96,7 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
   }
 
   Future<T?> push<T>(String name, {Object? arguments}) async {
-    _history.add(_initialRoutes().where((element) => element.name == name).first.page);
+    _history.add(_initialRoutes().where((element) => element.name == name).first.createPage(arguments));
     notifyListeners();
     return (_history.last as DockPage<T>).waitForPop;
   }
