@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 abstract class RootRouterDelegate<R> extends RouterDelegate<R> with ChangeNotifier {}
 
 class DockRouterDelegate<R> extends RootRouterDelegate<R> {
-  DockRouterDelegate(this._router, this._initialRoutes) {
-    final initialPageList = _initialRoutes().where((element) => element.initial).toList();
+  DockRouterDelegate(this._router, this._routeConfigs) {
+    final initialPageList = _routeConfigs().where((element) => element.initial).toList();
     assert(initialPageList.length == 1, 'There should be exactly one initial page');
     _history.add(initialPageList.first.createPage());
     addListener(() {
@@ -24,7 +24,7 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
 
   List<DockPage<Object>> get history => List.unmodifiable(_history);
   final _navigatorKey = GlobalKey<NavigatorState>();
-  final List<DockRoute<Object>> Function() _initialRoutes;
+  final List<DockRouteConfig<Object>> Function() _routeConfigs;
   final _dockNavigatorStateKey = GlobalKey<DockNavigatorState>();
 
   // GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
@@ -48,11 +48,11 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
         pages: history,
         navigatorKey: _navigatorKey,
         onPopPage: (route, result) {
-          final page = route.settings;
-          if (page is DockPage) {
-            if (page.onExit != null) {
+          if (route is DockRoute) {
+            final dockRoute = route as DockRoute;
+            if (dockRoute.page.onExit != null) {
               scheduleMicrotask(() async {
-                final onExitResult = await page.onExit!(_navigatorKey.currentContext!);
+                final onExitResult = await dockRoute.page.onExit!(_navigatorKey.currentContext!);
                 if (onExitResult) {
                   // TODO(KorayLiman): complete pop
                 }
@@ -61,9 +61,9 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
             } else {
               final didPop = route.didPop(result);
               if (!didPop) return false;
-              _history.remove(page);
+              _history.remove(dockRoute.page);
               scheduleMicrotask(() {
-                page.completePop(result);
+                dockRoute.page.completePop(result);
               });
 
               return true;
@@ -95,13 +95,13 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
     throw UnimplementedError();
   }
 
-  Future<T?> push<T>(String name, {Object? arguments}) async {
-    _history.add(_initialRoutes().where((element) => element.name == name).first.createPage(arguments));
+  Future<T?> push<T extends Object>(String name, {Object? arguments}) async {
+    _history.add(_routeConfigs().where((element) => element.name == name).first.createPage<T>(arguments));
     notifyListeners();
     return (_history.last as DockPage<T>).waitForPop;
   }
 
-  void pop<T>([T? result]) {
+  void pop<T extends Object>([T? result]) {
     final last = _history.removeLast();
     notifyListeners();
     scheduleMicrotask(() {

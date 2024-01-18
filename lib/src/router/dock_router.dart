@@ -3,12 +3,12 @@ import 'package:dock_router/src/delegate/dock_router_delegate.dart';
 import 'package:flutter/material.dart';
 
 abstract class DockRouterBase implements RouterConfig<Object> {
-  Future<T?> push<T extends Object?>(String name, {Object? arguments});
-  void pop<T>([T? result]);
+  Future<T?> push<T extends Object>(String name, {Object? arguments});
+  void pop<T extends Object>([T? result]);
 }
 
 class DockRouter extends DockRouterBase {
-  DockRouter({required List<DockRoute<Object>> Function() routes}) : backButtonDispatcher = RootBackButtonDispatcher() {
+  DockRouter({required List<DockRouteConfig<Object>> Function() routes}) : backButtonDispatcher = RootBackButtonDispatcher() {
     routerDelegate = DockRouterDelegate(this, routes);
   }
 
@@ -25,12 +25,12 @@ class DockRouter extends DockRouterBase {
   late final DockRouterDelegate<Object> routerDelegate;
 
   @override
-  Future<T?> push<T extends Object?>(String name, {Object? arguments}) async {
+  Future<T?> push<T extends Object>(String name, {Object? arguments}) async {
     return routerDelegate.push<T>(name, arguments: arguments);
   }
 
   @override
-  void pop<T>([T? result]) {
+  void pop<T extends Object>([T? result]) {
     routerDelegate.pop<T>(result);
   }
 }

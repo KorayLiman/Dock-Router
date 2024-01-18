@@ -7,21 +7,21 @@ void main() {
 
 DockRouter router = DockRouter(
     routes: () => [
-          DockRoute(
+          DockRouteConfig(
               name: '/home',
               initial: true,
               child: Scaffold(
                 body: Center(
                   child: TextButton(
                     onPressed: () async {
-                      final result = await router.push('/settings', arguments: 123);
+                      final result = await router.push<String>('/settings', arguments: 123);
                       print("result: $result");
                     },
                     child: const Text('Home'),
                   ),
                 ),
               )),
-          DockRoute(
+          DockRouteConfig(
               name: '/settings',
               child: Scaffold(
                 appBar: AppBar(),
@@ -33,7 +33,7 @@ DockRouter router = DockRouter(
                       Builder(builder: (context) {
                         return TextButton(
                           onPressed: () {
-                            print(ModalRoute.of(context).);
+                            print(DockRoute.of(context).page.arguments);
                             router.pop('result from settings');
                           },
                           child: const Text('Pop'),
