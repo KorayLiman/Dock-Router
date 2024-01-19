@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:dock_router/src/page/dock_page.dart';
 import 'package:flutter/material.dart';
 
-class DockRouteConfig<T> {
+class DockRouteConfig {
   DockRouteConfig({
     required this.name,
     required this.child,
@@ -26,7 +25,7 @@ class DockRouteConfig<T> {
   final bool maintainState;
   final String? restorationId;
 
-  final FutureOr<bool> Function(BuildContext)? onExit;
+  final ExitCallback? onExit;
 
   DockPage<T> createPage<T>([Object? arguments]) {
     return Platform.isAndroid

@@ -6,9 +6,9 @@ import 'package:dock_router/src/router/dock_router_inherited.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-abstract class RootRouterDelegate<R> extends RouterDelegate<R> with ChangeNotifier {}
+abstract class RootRouterDelegate<R> extends RouterDelegate<R> with ChangeNotifier implements RoutingOperation {}
 
-class DockRouterDelegate<R> extends RootRouterDelegate<R> {
+class DockRouterDelegate<R> extends RootRouterDelegate<DockRouteConfig> {
   DockRouterDelegate(this._router, this._routeConfigs) {
     final initialPageList = _routeConfigs().where((element) => element.initial).toList();
     assert(initialPageList.length == 1, 'There should be exactly one initial page');
@@ -20,16 +20,14 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
 
   final DockRouter _router;
 
-  List<DockPage<Object>> _history = [];
+  final List<DockPage<Object>> _history = [];
 
   List<DockPage<Object>> get history => List.unmodifiable(_history);
   final _navigatorKey = GlobalKey<NavigatorState>();
-  final List<DockRouteConfig<Object>> Function() _routeConfigs;
+  final List<DockRouteConfig> Function() _routeConfigs;
   final _dockNavigatorStateKey = GlobalKey<DockNavigatorState>();
 
   // GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
-
-  // List<DockPage<Object>> get history => _history;
 
   @override
   void dispose() {
@@ -54,6 +52,7 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
               scheduleMicrotask(() async {
                 final onExitResult = await dockRoute.page.onExit!(_navigatorKey.currentContext!);
                 if (onExitResult) {
+                  notifyListeners();
                   // TODO(KorayLiman): complete pop
                 }
               });
@@ -80,32 +79,73 @@ class DockRouterDelegate<R> extends RootRouterDelegate<R> {
     if (_history.length <= 1) return SynchronousFuture(false);
     _navigatorKey.currentState?.pop();
     return SynchronousFuture(true);
-    final page = _history.last;
-    final temp = List<DockPage<Object>>.from(_history)..removeLast();
-    _history = temp;
-    notifyListeners();
-    debugPrint('popped page: ${page.name}');
-    page.completePop(null);
-    return SynchronousFuture(true);
   }
 
   @override
-  Future<void> setNewRoutePath(configuration) {
-    // TODO: implement setNewRoutePath
-    throw UnimplementedError();
-  }
+  Future<void> setNewRoutePath(DockRouteConfig configuration) => throw UnimplementedError();
 
+  @override
   Future<T?> push<T extends Object>(String name, {Object? arguments}) async {
     _history.add(_routeConfigs().where((element) => element.name == name).first.createPage<T>(arguments));
     notifyListeners();
     return (_history.last as DockPage<T>).waitForPop;
   }
 
-  void pop<T extends Object>([T? result]) {
-    final last = _history.removeLast();
+  @override
+  Future<T?> pushReplacement<T extends Object>(String name, {Object? arguments}) async {
+    _history
+      ..removeLast()
+      ..add(_routeConfigs().where((element) => element.name == name).first.createPage<T>(arguments));
     notifyListeners();
-    scheduleMicrotask(() {
-      last.completePop(result);
-    });
+    return (_history.last as DockPage<T>).waitForPop;
+  }
+
+  @override
+  Future<T?> pushReplacementAll<T extends Object>(String name, {Object? arguments}) async {
+    _history
+      ..clear()
+      ..add(_routeConfigs().where((element) => element.name == name).first.createPage<T>(arguments));
+    notifyListeners();
+    return (_history.last as DockPage<T>).waitForPop;
+  }
+
+  @override
+  void pop<T extends Object>([T? result]) {
+    if (_navigatorKey.currentState?.canPop() ?? false) {
+      _navigatorKey.currentState?.pop(result);
+    }
+  }
+
+  @override
+  Future<void> popUntil(String name) async {
+    if (_history.where((element) => element.name == name).isEmpty) {
+      throw Exception('''
+        \nTried to pop until $name but there is no page with that name in the history''');
+    }
+    while (_history.last.name != name) {
+      final popResult = await _history.last.onExit?.call(_navigatorKey.currentContext!) ?? true;
+      if (popResult) {
+        _history.removeLast().completePop(null);
+      } else {
+        break;
+      }
+    }
+    notifyListeners();
+  }
+
+  @override
+  Future<void> popBelow() async {
+    final length = _history.length;
+    if (length <= 1) return SynchronousFuture(null);
+    while (length > 1) {
+      final previousIndexOfLastItem = length - 2;
+      final popResult = await _history[previousIndexOfLastItem].onExit?.call(_navigatorKey.currentContext!) ?? true;
+      if (popResult) {
+        _history.removeAt(previousIndexOfLastItem).completePop(null);
+      } else {
+        break;
+      }
+    }
+    notifyListeners();
   }
 }

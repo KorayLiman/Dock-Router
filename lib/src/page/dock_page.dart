@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dock_router/src/route/dock_routes.dart';
 import 'package:flutter/material.dart';
 
-typedef ExitCallback = FutureOr<bool> Function(BuildContext context);
+typedef ExitCallback = FutureOr<bool> Function(BuildContext context)?;
 
 abstract class DockPage<T> extends Page<T> {
   DockPage({
@@ -30,9 +30,14 @@ abstract class DockPage<T> extends Page<T> {
   bool get barrierDismissible;
 
   bool get fullscreenDialog;
+
   bool get maintainState;
 
-  final FutureOr<bool> Function(BuildContext)? onExit;
+  final ExitCallback onExit;
+
+  late final DockRoute _route;
+
+  DockRoute get route;
 }
 
 class DockCupertinoPage<T> extends DockPage<T> {
@@ -60,12 +65,13 @@ class DockCupertinoPage<T> extends DockPage<T> {
 
   @override
   DockCupertinoRoute<T> createRoute(BuildContext context) {
-    return DockCupertinoRoute(
+    _route = DockCupertinoRoute(
       page: this,
       allowSnapshotting: allowSnapshotting,
       barrierDismissible: barrierDismissible,
       fullscreenDialog: fullscreenDialog,
     );
+    return _route as DockCupertinoRoute<T>;
   }
 
   @override
@@ -76,6 +82,9 @@ class DockCupertinoPage<T> extends DockPage<T> {
 
   @override
   final bool fullscreenDialog;
+
+  @override
+  DockRoute get route => _route;
 }
 
 class DockMaterialPage<T> extends DockPage<T> {
@@ -108,12 +117,16 @@ class DockMaterialPage<T> extends DockPage<T> {
   final bool fullscreenDialog;
 
   @override
+  DockRoute get route => _route;
+
+  @override
   DockMaterialRoute<T> createRoute(BuildContext context) {
-    return DockMaterialRoute(
+    _route = DockMaterialRoute(
       page: this,
       allowSnapshotting: allowSnapshotting,
       barrierDismissible: barrierDismissible,
       fullscreenDialog: fullscreenDialog,
     );
+    return _route as DockMaterialRoute<T>;
   }
 }

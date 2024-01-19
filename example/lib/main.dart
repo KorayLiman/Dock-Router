@@ -14,8 +14,7 @@ DockRouter router = DockRouter(
                 body: Center(
                   child: TextButton(
                     onPressed: () async {
-                      final result = await router.push<String>('/settings', arguments: 123);
-                      print("result: $result");
+                      await router.push<String>('/settings', arguments: 123);
                     },
                     child: const Text('Home'),
                   ),
@@ -30,15 +29,16 @@ DockRouter router = DockRouter(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text('Settings'),
-                      Builder(builder: (context) {
-                        return TextButton(
-                          onPressed: () {
-                            print(DockRoute.of(context).page.arguments);
-                            router.pop('result from settings');
-                          },
-                          child: const Text('Pop'),
-                        );
-                      }),
+                      Builder(
+                        builder: (context) {
+                          return TextButton(
+                            onPressed: () async {
+                              DockRouter.of(context).pop();
+                            },
+                            child: const Text('Pop'),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
