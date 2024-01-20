@@ -28,8 +28,8 @@ class DockRouteConfig {
   final ExitCallback? onExit;
 
   DockPage<T> createPage<T>([Object? arguments]) {
-    return Platform.isAndroid
-        ? DockMaterialPage<T>(
+    return Platform.isIOS
+        ? DockCupertinoPage<T>(
             name: name,
             child: child,
             allowSnapshotting: allowSnapshotting,
@@ -40,7 +40,7 @@ class DockRouteConfig {
             maintainState: maintainState,
             arguments: arguments,
           )
-        : DockCupertinoPage<T>(
+        : DockMaterialPage<T>(
             name: name,
             child: child,
             allowSnapshotting: allowSnapshotting,
