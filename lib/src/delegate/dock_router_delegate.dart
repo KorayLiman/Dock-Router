@@ -58,17 +58,22 @@ class DockRouterDelegate<R> extends RootRouterDelegate<DockRouteConfig> {
               });
               return false;
             } else {
-              final didPop = route.didPop(result);
-              if (!didPop) return false;
               _history.remove(dockRoute.page);
               scheduleMicrotask(() {
                 dockRoute.page.completePop(result);
               });
-
+              route.didPop(result);
               return true;
             }
+          } else {
+            final didPop = route.didPop(result);
+            if (didPop) {
+              _history.removeLast();
+              return true;
+            } else {
+              return false;
+            }
           }
-          return false;
         },
       ),
     );
@@ -110,6 +115,29 @@ class DockRouterDelegate<R> extends RootRouterDelegate<DockRouteConfig> {
   }
 
   @override
+  Future<T?> pushAll<T extends Object>(List<String> names, {Object? arguments}) async {
+    for (final name in names) {
+      final args = name == names.last ? arguments : null;
+      _history.add(_routeConfigs().where((element) => element.name == name).first.createPage<T>(args));
+    }
+    notifyListeners();
+    return (_history.last as DockPage<T>).waitForPop;
+  }
+
+  @override
+  Future<void> pushAndRemoveUntil(String name, {Object? arguments}) async {
+    assert(_history.where((element) => element.name == name).isNotEmpty, '''
+        \nThere is no page with name $name in the history.
+        If you want to push a page and remove all other pages, use pushReplacementAll instead.''');
+    _history.add(_routeConfigs().where((element) => element.name == name).first.createPage(arguments));
+    while (_history.last.name != name) {
+      _history.removeLast();
+    }
+
+    notifyListeners();
+  }
+
+  @override
   void pop<T extends Object>([T? result]) {
     if (_navigatorKey.currentState?.canPop() ?? false) {
       _navigatorKey.currentState?.pop(result);
@@ -146,6 +174,21 @@ class DockRouterDelegate<R> extends RootRouterDelegate<DockRouteConfig> {
         break;
       }
     }
+    notifyListeners();
+  }
+
+  @override
+  Future<void> removeWhere(bool Function(DockRoute route) predicate) async {
+    final toBeRemoved = <DockPage<Object>>[];
+    for (final page in _history) {
+      if (predicate.call(page.route)) {
+        final popResult = await page.onExit?.call(_navigatorKey.currentContext!) ?? true;
+        if (popResult) {
+          toBeRemoved.add(page);
+        }
+      }
+    }
+    _history.removeWhere(toBeRemoved.contains);
     notifyListeners();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:dock_router/src/navigator/observer.dart';
 import 'package:dock_router/src/page/dock_page.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,7 @@ class DockNavigatorState extends State<DockNavigator> {
       key: widget.navigatorKey,
       pages: widget.pages,
       onPopPage: widget.onPopPage,
+      observers: [DockNavigatorObserver()],
     );
   }
 }

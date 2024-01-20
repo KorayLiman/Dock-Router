@@ -1,49 +1,27 @@
 import 'package:dock_router/dock_router.dart';
+import 'package:dock_router_example/pages/home/home_view.dart';
+import 'package:dock_router_example/pages/login/login_view.dart';
+import 'package:dock_router_example/product/constants/route_names.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const DockRouterApp());
 }
 
 DockRouter router = DockRouter(
-    routes: () => [
-          DockRouteConfig(
-              name: '/home',
-              initial: true,
-              child: Scaffold(
-                body: Center(
-                  child: TextButton(
-                    onPressed: () async {
-                      await router.push<String>('/settings', arguments: 123);
-                    },
-                    child: const Text('Home'),
-                  ),
-                ),
-              )),
-          DockRouteConfig(
-              name: '/settings',
-              child: Scaffold(
-                appBar: AppBar(),
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Settings'),
-                      Builder(
-                        builder: (context) {
-                          return TextButton(
-                            onPressed: () async {
-                              DockRouter.of(context).pop();
-                            },
-                            child: const Text('Pop'),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              )),
-        ]);
+  routes: () => [
+    DockRouteConfig(
+      name: RouteNames.login,
+      initial: true,
+      child: const LoginView(),
+    ),
+    DockRouteConfig(
+      name: RouteNames.home,
+      child: const HomeView(),
+    ),
+  ],
+);
 
 class DockRouterApp extends StatelessWidget {
   const DockRouterApp({super.key});

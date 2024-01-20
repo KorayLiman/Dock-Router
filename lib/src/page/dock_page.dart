@@ -44,6 +44,7 @@ class DockCupertinoPage<T> extends DockPage<T> {
   /// Creates a cupertino page.
   DockCupertinoPage({
     required this.child,
+    required super.key,
     // this.initial = false,
     super.onExit,
     this.maintainState = true,
@@ -54,7 +55,7 @@ class DockCupertinoPage<T> extends DockPage<T> {
     super.name,
     super.arguments,
     super.restorationId,
-  }) : super(key: ValueKey(name));
+  });
 
   final Widget child;
 
@@ -91,6 +92,7 @@ class DockMaterialPage<T> extends DockPage<T> {
   /// Creates a material page.
   DockMaterialPage({
     required this.child,
+    required super.key,
     super.onExit,
     // this.initial = false,
     this.maintainState = true,
@@ -100,7 +102,7 @@ class DockMaterialPage<T> extends DockPage<T> {
     super.name,
     super.arguments,
     super.restorationId,
-  }) : super(key: ValueKey(name));
+  });
 
   final Widget child;
 
