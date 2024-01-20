@@ -31,6 +31,7 @@ class DockRouteConfig {
     return Platform.isIOS
         ? DockCupertinoPage<T>(
             name: name,
+            key: ValueKey('name${UniqueKey()}'),
             child: child,
             allowSnapshotting: allowSnapshotting,
             fullscreenDialog: fullscreenDialog,
@@ -42,6 +43,7 @@ class DockRouteConfig {
           )
         : DockMaterialPage<T>(
             name: name,
+            key: ValueKey('name${UniqueKey()}'),
             child: child,
             allowSnapshotting: allowSnapshotting,
             fullscreenDialog: fullscreenDialog,
