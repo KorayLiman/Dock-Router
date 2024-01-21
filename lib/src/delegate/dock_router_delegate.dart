@@ -52,6 +52,8 @@ class DockRouterDelegate<R> extends RootRouterDelegate<DockRouteConfig> {
               scheduleMicrotask(() async {
                 final onExitResult = await dockRoute.page.onExit!(_navigatorKey.currentContext!);
                 if (onExitResult) {
+                  _history.remove(dockRoute.page);
+                  dockRoute.page.completePop(result);
                   notifyListeners();
                   // TODO(KorayLiman): complete pop
                 }
@@ -138,9 +140,41 @@ class DockRouterDelegate<R> extends RootRouterDelegate<DockRouteConfig> {
   }
 
   @override
-  void pop<T extends Object>([T? result]) {
-    if (_navigatorKey.currentState?.canPop() ?? false) {
-      _navigatorKey.currentState?.pop(result);
+  Future<bool> pop<T extends Object>([T? result]) async {
+    final onExitCallback = _history.last.onExit;
+    if (onExitCallback == null) {
+      final page = _history.removeLast();
+      scheduleMicrotask(() {
+        page.completePop(result);
+        notifyListeners();
+      });
+      return SynchronousFuture(true);
+    } else {
+      if (onExitCallback is Future) {
+        final popResult = await onExitCallback(_navigatorKey.currentContext!);
+        if (popResult) {
+          final page = _history.removeLast();
+          scheduleMicrotask(() {
+            page.completePop(result);
+            notifyListeners();
+          });
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        final popResult = await onExitCallback(_navigatorKey.currentContext!);
+        if (popResult) {
+          final page = _history.removeLast();
+          scheduleMicrotask(() {
+            page.completePop(result);
+            notifyListeners();
+          });
+          return SynchronousFuture(true);
+        } else {
+          return SynchronousFuture(false);
+        }
+      }
     }
   }
 

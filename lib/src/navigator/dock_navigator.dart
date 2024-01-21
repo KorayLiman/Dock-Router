@@ -29,7 +29,9 @@ class DockNavigatorState extends State<DockNavigator> {
       key: widget.navigatorKey,
       pages: widget.pages,
       onPopPage: widget.onPopPage,
-      observers: [DockNavigatorObserver()],
+      observers: [
+        DockNavigatorObserver(),
+      ],
     );
   }
 }

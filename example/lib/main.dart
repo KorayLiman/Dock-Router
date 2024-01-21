@@ -12,13 +12,16 @@ void main() {
 DockRouter router = DockRouter(
   routes: () => [
     DockRouteConfig(
-      name: RouteNames.login,
       initial: true,
+      name: RouteNames.login,
       child: const LoginView(),
     ),
     DockRouteConfig(
       name: RouteNames.home,
       child: const HomeView(),
+      onExit: (context) {
+        return true;
+      },
     ),
   ],
 );

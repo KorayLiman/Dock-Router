@@ -10,7 +10,7 @@ mixin DockRoute {
     return route! as DockRoute;
   }
 
-  DockPage get page;
+  DockPage<dynamic> get page;
 }
 
 class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T>, DockRoute {

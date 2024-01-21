@@ -14,7 +14,7 @@ abstract interface class RoutingOperation {
 
   Future<void> pushAndRemoveUntil(String name, {Object? arguments});
 
-  void pop<T extends Object>([T? result]);
+  Future<bool> pop<T extends Object>([T? result]);
 
   Future<void> popUntil(String name);
 
@@ -81,8 +81,8 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object>, Routing
   }
 
   @override
-  void pop<T extends Object>([T? result]) {
-    routerDelegate.pop<T>(result);
+  Future<bool> pop<T extends Object>([T? result]) {
+    return routerDelegate.pop<T>(result);
   }
 
   @override
