@@ -1,9 +1,10 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:dock_router/src/delegate/dock_router_delegate.dart';
+import 'package:dock_router/src/navigator/dock_navigator.dart';
 import 'package:dock_router/src/router/dock_router_inherited.dart';
 import 'package:flutter/material.dart';
 
-abstract interface class RoutingOperation {
+mixin RoutingOperationMixin {
   Future<T?> push<T extends Object>(String name, {Object? arguments});
 
   Future<T?> pushReplacement<T extends Object>(String name, {Object? arguments});
@@ -19,10 +20,11 @@ abstract interface class RoutingOperation {
   Future<void> popUntil(String name);
 
   Future<void> popBelow();
+
   Future<void> removeWhere(bool Function(DockRoute route) predicate);
 }
 
-abstract class DockRouterBase {
+abstract class DockRouterBase with RoutingOperationMixin {
   List<DockPage<Object>> get history;
 
   DockRoute get currentRoute;
@@ -30,15 +32,22 @@ abstract class DockRouterBase {
   DockRoute? get previousRoute;
 
   Object? get arguments;
+
+  static const routerLoggerName = 'DOCK ROUTER';
+
+  List<RouteConfigurationBase> Function() get routes;
 }
 
-class DockRouter extends DockRouterBase implements RouterConfig<Object>, RoutingOperation {
-  DockRouter({required List<DockRouteConfig> Function() routes}) : backButtonDispatcher = RootBackButtonDispatcher() {
-    routerDelegate = DockRouterDelegate(this, routes);
+class DockRouter extends DockRouterBase implements RouterConfig<Object> {
+  DockRouter({required this.routes, BackButtonDispatcher? androidBackButtonDispatcher}) : backButtonDispatcher = androidBackButtonDispatcher ?? RootBackButtonDispatcher() {
+    routerDelegate = DockRouterDelegate(this);
   }
 
   @override
-  final BackButtonDispatcher backButtonDispatcher;
+  final List<RouteConfigurationBase> Function() routes;
+
+  @override
+  late BackButtonDispatcher backButtonDispatcher;
 
   @override
   RouteInformationParser<Object>? get routeInformationParser => null;
@@ -49,10 +58,22 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object>, Routing
   @override
   late final DockRouterDelegate<Object> routerDelegate;
 
-  static DockRouter of(BuildContext context) {
+  static DockRouterBase of(BuildContext context, {bool rootRouter = false}) {
+    if (!rootRouter) {
+      final inheritedRouter = context.dependOnInheritedWidgetOfExactType<InheritedDockRouter>();
+      assert(inheritedRouter != null, 'No DockRouter found in Widget Tree for given context');
+      return inheritedRouter!.router;
+    } else {
+      final rootNavigatorState = context.findRootAncestorStateOfType<DockNavigatorState>();
+      assert(rootNavigatorState != null, 'No DockNavigator found in Widget Tree for given context');
+      return rootNavigatorState!.router;
+    }
+  }
+
+  static DockRouterBase? maybeOf(BuildContext context) {
     final inheritedRouter = context.dependOnInheritedWidgetOfExactType<InheritedDockRouter>();
-    assert(inheritedRouter != null, 'No DockRouter found in Widget Tree for given context');
-    return inheritedRouter!.router;
+    if (inheritedRouter == null) return null;
+    return inheritedRouter.router;
   }
 
   @override

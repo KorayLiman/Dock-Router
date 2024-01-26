@@ -9,12 +9,12 @@ class InheritedDockRouter extends InheritedWidget {
     super.key,
   });
 
-  final DockRouter router;
+  final DockRouterBase router;
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<DockRouter>('dockRouter', router));
+    properties.add(DiagnosticsProperty<DockRouterBase>('dockRouter', router));
   }
 
   @override
