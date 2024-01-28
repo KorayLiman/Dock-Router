@@ -11,6 +11,8 @@ abstract interface class DockRoute {
   }
 
   DockPage<dynamic> get page;
+
+  String get name;
 }
 
 class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> implements DockRoute {
@@ -37,6 +39,9 @@ class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
 
   @override
   final DockMaterialPage<T> page;
+
+  @override
+  String get name => page.name!;
 }
 
 class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> implements DockRoute {
@@ -66,4 +71,7 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
 
   @override
   final DockCupertinoPage<T> page;
+
+  @override
+  String get name => page.name!;
 }

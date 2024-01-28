@@ -1,128 +1,62 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
-
-
-
-//
-// class TabsRouter extends DockRouterBase implements RouterConfig<Object> {
-//   TabsRouter({
-//     required this.tabRoutes,
-//     required this.parentRouter,
-//     required this.backButtonDispatcher,
-//   });
-//
-//   var _tabIndex = 0;
-//
-//   int get tabIndex => _tabIndex;
-//
-//   final List<TabRouteConfiguration> Function() tabRoutes;
-//
-//   final DockRouterBase parentRouter;
-//
-//   @override
-//   Object? get arguments => parentRouter.history.last.arguments;
-//
-//   @override
-//   final BackButtonDispatcher backButtonDispatcher;
-//
-//   @override
-//   // TODO: implement currentRoute
-//   DockRoute get currentRoute => throw UnimplementedError();
-//
-//   @override
-//   List<DockPage<Object>> get history => List.unmodifiable(routerDelegate.history);
-//
-//   @override
-//   late final TabsRouterDelegate<Object> routerDelegate;
-//
-//   @override
-//   Future<bool> pop<T extends Object>([T? result]) {
-//     // TODO: implement pop
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   Future<void> popBelow() {
-//     // TODO: implement popBelow
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   Future<void> popUntil(String name) {
-//     // TODO: implement popUntil
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   // TODO: implement previousRoute
-//   DockRoute? get previousRoute => throw UnimplementedError();
-//
-//   @override
-//   Future<T?> push<T extends Object>(String name, {Object? arguments}) {
-//     // TODO: implement push
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   Future<T?> pushAll<T extends Object>(List<String> names, {Object? arguments}) {
-//     // TODO: implement pushAll
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   Future<void> pushAndRemoveUntil(String name, {Object? arguments}) {
-//     // TODO: implement pushAndRemoveUntil
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   Future<T?> pushReplacement<T extends Object>(String name, {Object? arguments}) {
-//     // TODO: implement pushReplacement
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   Future<T?> pushReplacementAll<T extends Object>(String name, {Object? arguments}) {
-//     // TODO: implement pushReplacementAll
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   Future<void> removeWhere(bool Function(DockRoute route) predicate) {
-//     // TODO: implement removeWhere
-//     throw UnimplementedError();
-//   }
-//
-//   @override
-//   // TODO: implement routeInformationParser
-//   RouteInformationParser<Object>? get routeInformationParser => throw UnimplementedError();
-//
-//   @override
-//   // TODO: implement routeInformationProvider
-//   RouteInformationProvider? get routeInformationProvider => throw UnimplementedError();
-// }
+typedef TabsBuilder = Widget Function(BuildContext context, Widget child);
 
 class TabsRouter extends StatefulWidget {
-  const TabsRouter({super.key});
+  const TabsRouter({required this.builder, super.key});
+
+  static TabsRouterState of(BuildContext context) {
+    final state = context.findAncestorStateOfType<TabsRouterState>();
+    assert(state != null, 'No TabsRouter found in context');
+    return state!;
+  }
+
+  final TabsBuilder builder;
 
   @override
-  State<TabsRouter> createState() => _TabsRouterState();
+  State<TabsRouter> createState() => TabsRouterState();
 }
 
-class _TabsRouterState extends State<TabsRouter> {
+class TabsRouterState extends State<TabsRouter> {
+  late final List<DockPage<Object>> _tabs;
+  late final List<TabRouteConfiguration> _tabsRoutes;
+  final _activeTabListenable = ValueNotifier<int>(0);
 
- late  final DockPage<Object> _tabs;
+  int get activeTabIndex => _activeTabListenable.value;
 
- @override
-  void initState() {
-  Router.
-    super.initState();
+  // ignore: use_setters_to_change_properties
+  void setActiveIndex(int index) {
+    _activeTabListenable.value = index;
+  }
+
+  DockRoute get currentRoute => _tabs[activeTabIndex].route;
+
+  @override
+  void didChangeDependencies() {
+    final currentRouter = DockRouter.of(context);
+    _tabsRoutes = currentRouter.routes().firstWhere((element) => element.name == currentRouter.currentRoute.name).children;
+    _tabs = _tabsRoutes.map((e) => e.createPage<Object>()).toList();
+
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _activeTabListenable.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return ValueListenableBuilder(
+      valueListenable: _activeTabListenable,
+      builder: (context, activeTabIndex, _) {
+        return IndexedStack(
+          index: activeTabIndex,
+          children: _tabs.map((e) => widget.builder(context, e.child)).toList(),
+        );
+      },
+    );
   }
 }
-

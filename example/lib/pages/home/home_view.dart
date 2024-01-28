@@ -1,4 +1,5 @@
 import 'package:dock_router_example/main.dart';
+import 'package:dock_router_example/product/constants/route_names.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
@@ -16,8 +17,7 @@ class _HomeViewState extends State<HomeView> {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            final result = await router.pop();
-            print(result);
+            router.push(RouteNames.sampleTabPage);
           },
           child: const Text('Some button'),
         ),

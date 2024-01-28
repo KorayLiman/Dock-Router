@@ -1,5 +1,3 @@
-
-import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
 class NestedNavigationPage extends StatefulWidget {
@@ -12,6 +10,6 @@ class NestedNavigationPage extends StatefulWidget {
 class _NestedNavigationPageState extends State<NestedNavigationPage> {
   @override
   Widget build(BuildContext context) {
-    return NestedRouter(routes: ()=>);
+    return Container();
   }
 }

@@ -1,25 +1,25 @@
+import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
-class SampleTabPage extends StatefulWidget {
+class SampleTabPage extends StatelessWidget {
   const SampleTabPage({super.key});
 
   @override
-  State<SampleTabPage> createState() => _SampleTabPageState();
-}
-
-class _SampleTabPageState extends State<SampleTabPage> {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sample Tab Page'),
-      ),
-      body: const Center(
-        child: ElevatedButton(
-          onPressed: null,
-          child: Text('Some button'),
-        ),
-      ),
+    return TabsRouter(
+      builder: (context, child) {
+        return Scaffold(
+          body: child,
+          bottomNavigationBar: NavigationBar(
+            onDestinationSelected: TabsRouter.of(context).setActiveIndex,
+            selectedIndex: TabsRouter.of(context).activeTabIndex,
+            destinations: const [
+              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+              NavigationDestination(icon: Icon(Icons.business), label: 'Business'),
+            ],
+          ),
+        );
+      },
     );
   }
 }
