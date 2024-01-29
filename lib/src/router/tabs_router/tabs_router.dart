@@ -1,24 +1,24 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
-typedef TabsBuilder = Widget Function(BuildContext context, Widget child);
+typedef TabsWidgetBuilder = Widget Function(BuildContext context, Widget child);
 
-class TabsRouter extends StatefulWidget {
-  const TabsRouter({required this.builder, super.key});
+class TabsBuilder extends StatefulWidget {
+  const TabsBuilder({required this.builder, super.key});
 
-  static TabsRouterState of(BuildContext context) {
-    final state = context.findAncestorStateOfType<TabsRouterState>();
-    assert(state != null, 'No TabsRouter found in context');
+  static TabsBuilderState of(BuildContext context) {
+    final state = context.findAncestorStateOfType<TabsBuilderState>();
+    assert(state != null, 'No TabsBuilder found in context');
     return state!;
   }
 
-  final TabsBuilder builder;
+  final TabsWidgetBuilder builder;
 
   @override
-  State<TabsRouter> createState() => TabsRouterState();
+  State<TabsBuilder> createState() => TabsBuilderState();
 }
 
-class TabsRouterState extends State<TabsRouter> {
+class TabsBuilderState extends State<TabsBuilder> {
   late final List<DockPage<Object>> _tabs;
   late final List<TabRouteConfiguration> _tabsRoutes;
   final _activeTabListenable = ValueNotifier<int>(0);
@@ -29,8 +29,6 @@ class TabsRouterState extends State<TabsRouter> {
   void setActiveIndex(int index) {
     _activeTabListenable.value = index;
   }
-
-  DockRoute get currentRoute => _tabs[activeTabIndex].route;
 
   @override
   void didChangeDependencies() {
@@ -49,6 +47,8 @@ class TabsRouterState extends State<TabsRouter> {
 
   @override
   Widget build(BuildContext context) {
+
+    DockRouter(routes: DockRouter.of(context, rootRouter: true).routes).;
     return ValueListenableBuilder(
       valueListenable: _activeTabListenable,
       builder: (context, activeTabIndex, _) {

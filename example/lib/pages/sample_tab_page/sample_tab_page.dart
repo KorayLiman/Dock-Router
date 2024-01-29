@@ -6,13 +6,13 @@ class SampleTabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TabsRouter(
+    return TabsBuilder(
       builder: (context, child) {
         return Scaffold(
           body: child,
           bottomNavigationBar: NavigationBar(
-            onDestinationSelected: TabsRouter.of(context).setActiveIndex,
-            selectedIndex: TabsRouter.of(context).activeTabIndex,
+            onDestinationSelected: TabsBuilder.of(context).setActiveIndex,
+            selectedIndex: TabsBuilder.of(context).activeTabIndex,
             destinations: const [
               NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
               NavigationDestination(icon: Icon(Icons.business), label: 'Business'),
