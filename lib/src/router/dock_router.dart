@@ -34,8 +34,6 @@ abstract class DockRouterBase with RoutingOperationMixin {
   Object? get arguments;
 
   static const routerLoggerName = 'DOCK ROUTER';
-
-  List<RouteConfigurationBase> Function() get routes;
 }
 
 class DockRouter extends DockRouterBase implements RouterConfig<Object> {
@@ -43,7 +41,6 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
     routerDelegate = DockRouterDelegate(this);
   }
 
-  @override
   final List<RouteConfigurationBase> Function() routes;
 
   @override
