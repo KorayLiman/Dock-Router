@@ -20,7 +20,7 @@ class TabsBuilder extends StatefulWidget {
 
 class TabsBuilderState extends State<TabsBuilder> {
   late final List<DockPage<Object>> _tabs;
-  late final Map<int, bool> _tabInitializationInfoIndexBased;
+  late final Map<int, bool> _indexBasedTabInitialization;
   final _activeTabListenable = ValueNotifier<int>(0);
 
   int get activeTabIndex => _activeTabListenable.value;
@@ -31,18 +31,29 @@ class TabsBuilderState extends State<TabsBuilder> {
   }
 
   @override
-  void didChangeDependencies() {
+  void initState() {
     final currentRouter = DockRouter.of(context) as DockRouter;
 
     _tabs = currentRouter.routes().firstWhere((element) => element.name == currentRouter.currentRoute.name).children.map((e) => e.createPage<Object>()).toList();
-    _tabInitializationInfoIndexBased = Map.fromEntries(_tabs.map((e) => MapEntry(_tabs.indexOf(e), false)));
-    super.didChangeDependencies();
+    _indexBasedTabInitialization = Map.fromEntries(_tabs.map((e) => MapEntry(_tabs.indexOf(e), false)));
+    super.initState();
   }
 
   @override
   void dispose() {
     _activeTabListenable.dispose();
     super.dispose();
+  }
+
+  Widget _buildWidgetLazy(BuildContext context, int index) {
+    if (activeTabIndex != index) {
+      return _indexBasedTabInitialization[index] == false ? const SizedBox.shrink() : widget.builder(context, _tabs[index].child);
+    }
+
+    if (_indexBasedTabInitialization[index] == false) {
+      _indexBasedTabInitialization[index] = true;
+    }
+    return widget.builder(context, _tabs[index].child);
   }
 
   @override
@@ -54,15 +65,7 @@ class TabsBuilderState extends State<TabsBuilder> {
           index: activeTabIndex,
           children: List.generate(
             _tabs.length,
-            (index) {
-              if (activeTabIndex == index) {
-                if (_tabInitializationInfoIndexBased[index] == false) {
-                  _tabInitializationInfoIndexBased[index] = true;
-                }
-                return widget.builder(context, _tabs[index].child);
-              }
-              return _tabInitializationInfoIndexBased[index] == false ? const SizedBox.shrink() : widget.builder(context, _tabs[index].child);
-            },
+            (index) => _buildWidgetLazy(context, index),
           ),
         );
       },

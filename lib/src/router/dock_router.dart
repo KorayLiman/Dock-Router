@@ -1,7 +1,6 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:dock_router/src/delegate/dock_router_delegate.dart';
 import 'package:dock_router/src/navigator/dock_navigator.dart';
-import 'package:dock_router/src/router/dock_router_inherited.dart';
 import 'package:flutter/material.dart';
 
 mixin RoutingOperationMixin {
@@ -57,20 +56,18 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
 
   static DockRouterBase of(BuildContext context, {bool rootRouter = false}) {
     if (!rootRouter) {
-      final inheritedRouter = context.dependOnInheritedWidgetOfExactType<InheritedDockRouter>();
-      assert(inheritedRouter != null, 'No DockRouter found in Widget Tree for given context');
-      return inheritedRouter!.router;
+      final dockNavigatorState = context.findAncestorStateOfType<DockNavigatorState>();
+      assert(dockNavigatorState != null, 'No DockRouter found in Widget Tree for given context');
+      return dockNavigatorState!.router;
     } else {
       final rootNavigatorState = context.findRootAncestorStateOfType<DockNavigatorState>();
-      assert(rootNavigatorState != null, 'No DockNavigator found in Widget Tree for given context');
+      assert(rootNavigatorState != null, 'No DockRouter found in Widget Tree for given context');
       return rootNavigatorState!.router;
     }
   }
 
   static DockRouterBase? maybeOf(BuildContext context) {
-    final inheritedRouter = context.dependOnInheritedWidgetOfExactType<InheritedDockRouter>();
-    if (inheritedRouter == null) return null;
-    return inheritedRouter.router;
+    return context.findAncestorStateOfType<DockNavigatorState>()?.router;
   }
 
   @override

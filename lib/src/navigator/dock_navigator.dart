@@ -1,6 +1,5 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:dock_router/src/navigator/observer.dart';
-import 'package:dock_router/src/router/dock_router_inherited.dart';
 import 'package:flutter/material.dart';
 
 class DockNavigator extends StatefulWidget {
@@ -48,16 +47,13 @@ class DockNavigatorState extends State<DockNavigator> {
   @override
   Widget build(BuildContext context) {
     _takeBackButtonPriority();
-    return InheritedDockRouter(
-      router: widget._router,
-      child: Navigator(
-        key: widget.navigatorKey,
-        pages: widget.pages,
-        onPopPage: widget.onPopPage,
-        observers: [
-          DockNavigatorObserver(),
-        ],
-      ),
+    return Navigator(
+      key: widget.navigatorKey,
+      pages: widget.pages,
+      onPopPage: widget.onPopPage,
+      observers: [
+        DockNavigatorObserver(),
+      ],
     );
   }
 }
