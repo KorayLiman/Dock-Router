@@ -29,8 +29,6 @@ class DockRouterDelegate<R> extends RootRouterDelegate<RouteConfigurationBase> {
   final List<RouteConfigurationBase> Function() _routeConfigs;
   final _dockNavigatorStateKey = GlobalKey<DockNavigatorState>();
 
-  // GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
-
   @override
   void dispose() {
     removeListener(() {
