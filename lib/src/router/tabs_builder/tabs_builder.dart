@@ -20,7 +20,7 @@ class TabsBuilder extends StatefulWidget {
 
 class TabsBuilderState extends State<TabsBuilder> {
   late final List<DockPage<Object>> _tabs;
-  late final Map<int, bool> _indexBasedTabInitialization;
+  late final List<Widget> _tabWidgets;
   final _activeTabListenable = ValueNotifier<int>(0);
 
   int get activeTabIndex => _activeTabListenable.value;
@@ -28,14 +28,16 @@ class TabsBuilderState extends State<TabsBuilder> {
   // ignore: use_setters_to_change_properties
   void setActiveIndex(int index) {
     _activeTabListenable.value = index;
+    if (_tabWidgets[index] is! _Placeholder) {}
   }
 
   @override
   void initState() {
-    final currentRouter = DockRouter.of(context) as DockRouter;
+    final parent = DockRouter.of(context) as DockRouter;
 
-    _tabs = currentRouter.routes().firstWhere((element) => element.name == currentRouter.currentRoute.name).children.map((e) => e.createPage<Object>()).toList();
-    _indexBasedTabInitialization = Map.fromEntries(_tabs.map((e) => MapEntry(_tabs.indexOf(e), false)));
+    _tabs = parent.routes().firstWhere((element) => element.name == parent.currentRoute.name).children.map((e) => e.createPage<Object>()).toList();
+    _tabWidgets = List.generate(_tabs.length, (index) => const _Placeholder());
+
     super.initState();
   }
 
@@ -46,14 +48,13 @@ class TabsBuilderState extends State<TabsBuilder> {
   }
 
   Widget _buildWidgetLazy(BuildContext context, int index) {
-    if (activeTabIndex != index) {
-      return _indexBasedTabInitialization[index] == false ? const SizedBox.shrink() : widget.builder(context, _tabs[index].child);
+    if (activeTabIndex == index && _tabWidgets[index] is _Placeholder) {
+      _tabWidgets[index] = widget.builder(
+        context,
+        NestedRouter.tab(tabIndex: index),
+      );
     }
-
-    if (_indexBasedTabInitialization[index] == false) {
-      _indexBasedTabInitialization[index] = true;
-    }
-    return widget.builder(context, _tabs[index].child);
+    return _tabWidgets[index];
   }
 
   @override
@@ -70,5 +71,14 @@ class TabsBuilderState extends State<TabsBuilder> {
         );
       },
     );
+  }
+}
+
+class _Placeholder extends StatelessWidget {
+  const _Placeholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:dock_router/src/delegate/dock_router_delegate.dart';
+import 'package:dock_router/src/delegate/router_delegate_base.dart';
 import 'package:dock_router/src/navigator/dock_navigator.dart';
 import 'package:flutter/material.dart';
 
@@ -33,17 +34,30 @@ abstract class DockRouterBase with RoutingOperationMixin {
   Object? get arguments;
 
   static const routerLoggerName = 'DOCK ROUTER';
+
+  BackButtonDispatcher get backButtonDispatcher;
+
+  List<RouteConfigurationBase> Function() get routes;
 }
 
 class DockRouter extends DockRouterBase implements RouterConfig<Object> {
-  DockRouter({required this.routes, BackButtonDispatcher? androidBackButtonDispatcher}) : backButtonDispatcher = androidBackButtonDispatcher ?? RootBackButtonDispatcher() {
+  DockRouter({required this.routes}) : backButtonDispatcher = RootBackButtonDispatcher() {
     routerDelegate = DockRouterDelegate(this);
   }
 
+  DockRouter.nested({required this.routes, required this.backButtonDispatcher}) {
+    routerDelegate = DockRouterDelegate.nested(this);
+  }
+
+  DockRouter.tab({required this.routes, required int tabIndex, required this.backButtonDispatcher}) {
+    routerDelegate = DockRouterDelegate.tab(this, tabIndex);
+  }
+
+  @override
   final List<RouteConfigurationBase> Function() routes;
 
   @override
-  late BackButtonDispatcher backButtonDispatcher;
+  final BackButtonDispatcher backButtonDispatcher;
 
   @override
   RouteInformationParser<Object>? get routeInformationParser => null;
@@ -52,7 +66,7 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
   RouteInformationProvider? get routeInformationProvider => null;
 
   @override
-  late final DockRouterDelegate<Object> routerDelegate;
+  late final RouterDelegateBase routerDelegate;
 
   static DockRouterBase of(BuildContext context, {bool rootRouter = false}) {
     if (!rootRouter) {
@@ -64,6 +78,14 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
       assert(rootNavigatorState != null, 'No DockRouter found in Widget Tree for given context');
       return rootNavigatorState!.router;
     }
+  }
+
+  static DockRouterBase parentOf(BuildContext context) {
+    final currentRouterContext = context.findAncestorStateOfType<DockNavigatorState>()?.context;
+    assert(currentRouterContext != null, 'No DockRouter found in Widget Tree for given context');
+    final parentRouter = currentRouterContext!.findAncestorStateOfType<DockNavigatorState>()?.router;
+    assert(parentRouter != null, 'No Parent DockRouter found in Widget Tree for given context');
+    return parentRouter!;
   }
 
   static DockRouterBase? maybeOf(BuildContext context) {

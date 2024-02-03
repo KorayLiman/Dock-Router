@@ -47,13 +47,19 @@ DockRouter router = DockRouter(
       name: RouteNames.sampleTabPage,
       child: const SampleTabPage(),
       children: [
-        TabRouteConfiguration(
+        RouteConfiguration(
           name: RouteNames.tab1,
           child: const Tab1(),
+          tabIndex: 0,
         ),
-        TabRouteConfiguration(
+        RouteConfiguration(
           name: RouteNames.tab2,
           child: const Tab2(),
+          tabIndex: 1,
+        ),
+        RouteConfiguration(
+          name: RouteNames.dummyRoute,
+          child: const Scaffold(),
         ),
       ],
     ),

@@ -13,7 +13,9 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home Screen')),
+      appBar: AppBar(
+        title: const Text('Home Screen'),
+      ),
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
