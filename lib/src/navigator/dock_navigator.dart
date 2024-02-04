@@ -1,15 +1,18 @@
+import 'package:dock_router/dock_router.dart';
 import 'package:dock_router/src/navigator/observer.dart';
-import 'package:dock_router/src/page/dock_page.dart';
 import 'package:flutter/material.dart';
 
 class DockNavigator extends StatefulWidget {
   const DockNavigator({
+    required DockRouterBase router,
     required GlobalKey<DockNavigatorState> key,
     required this.pages,
     required this.navigatorKey,
     required this.onPopPage,
-  }) : super(key: key);
+  })  : _router = router,
+        super(key: key);
 
+  final DockRouterBase _router;
   final List<DockPage<Object>> pages;
   final GlobalKey<NavigatorState> navigatorKey;
   final bool Function(Route<dynamic> route, dynamic result) onPopPage;
@@ -23,13 +26,26 @@ class DockNavigatorState extends State<DockNavigator> {
     if (mounted) setState(() {});
   }
 
+  DockRouterBase get router => widget._router;
+
   @override
   Widget build(BuildContext context) {
-    return Navigator(
+    router.backButtonDispatcher.takePriority();
+    final navigator = Navigator(
       key: widget.navigatorKey,
       pages: widget.pages,
       onPopPage: widget.onPopPage,
-      observers: [DockNavigatorObserver()],
+      observers: [
+        DockNavigatorObserver(),
+      ],
     );
+    // TODO(KorayLiman): Handle nested tab route iOS swipe back gesture
+    if (!router.isRoot) {
+      return PopScope(
+        canPop: router.history.length == 1,
+        child: navigator,
+      );
+    }
+    return navigator;
   }
 }

@@ -2,7 +2,7 @@ import 'package:dock_router/src/page/dock_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-mixin DockRoute {
+abstract interface class DockRoute {
   static DockRoute of(BuildContext context) {
     final route = ModalRoute.of(context);
     assert(route != null, 'No route found for context');
@@ -10,10 +10,12 @@ mixin DockRoute {
     return route! as DockRoute;
   }
 
-  DockPage get page;
+  DockPage<dynamic> get page;
+
+  String get name;
 }
 
-class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T>, DockRoute {
+class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> implements DockRoute {
   DockMaterialRoute({
     required this.page,
     super.allowSnapshotting,
@@ -37,9 +39,12 @@ class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
 
   @override
   final DockMaterialPage<T> page;
+
+  @override
+  String get name => page.name!;
 }
 
-class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T>, DockRoute {
+class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> implements DockRoute {
   DockCupertinoRoute({
     required this.page,
     super.allowSnapshotting,
@@ -66,4 +71,7 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
 
   @override
   final DockCupertinoPage<T> page;
+
+  @override
+  String get name => page.name!;
 }

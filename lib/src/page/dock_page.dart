@@ -38,6 +38,8 @@ abstract class DockPage<T> extends Page<T> {
   late final DockRoute _route;
 
   DockRoute get route;
+
+  Widget get child;
 }
 
 class DockCupertinoPage<T> extends DockPage<T> {
@@ -57,6 +59,7 @@ class DockCupertinoPage<T> extends DockPage<T> {
     super.restorationId,
   });
 
+  @override
   final Widget child;
 
   final String? title;
@@ -104,6 +107,7 @@ class DockMaterialPage<T> extends DockPage<T> {
     super.restorationId,
   });
 
+  @override
   final Widget child;
 
   @override
