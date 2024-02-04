@@ -1,3 +1,5 @@
+import 'package:dock_router/dock_router.dart';
+import 'package:dock_router_example/product/constants/route_names.dart';
 import 'package:flutter/material.dart';
 
 class Tab2 extends StatefulWidget {
@@ -12,7 +14,7 @@ class _Tab2State extends State<Tab2> {
 
   @override
   Widget build(BuildContext context) {
-    print('Tab2 build');
+    print("built tab 2");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tab 2'),
@@ -21,7 +23,12 @@ class _Tab2State extends State<Tab2> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Tab 2'),
+            TextButton(
+              onPressed: () {
+                DockRouter.of(context).push(RouteNames.dummyRoute);
+              },
+              child: const Text('Tab 2'),
+            ),
             Text('$_counter'),
           ],
         ),

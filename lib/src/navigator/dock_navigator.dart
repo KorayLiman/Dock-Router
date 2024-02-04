@@ -40,9 +40,9 @@ class DockNavigatorState extends State<DockNavigator> {
       ],
     );
     // TODO(KorayLiman): Handle nested tab route iOS swipe back gesture
-    if (!router.isRoot) {
+    if (!router.isRoot && router.history.length != 1) {
       return PopScope(
-        canPop: router.history.length == 1,
+        canPop: false,
         child: navigator,
       );
     }

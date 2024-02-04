@@ -34,8 +34,22 @@ class RouteConfiguration extends RouteConfigurationBase {
     required this.name,
     required this.child,
     this.initial = false,
-    this.tabIndex,
     this.children = const [],
+    this.onExit,
+    this.allowSnapshotting = true,
+    this.fullscreenDialog = false,
+    this.barrierDismissible = false,
+    this.maintainState = true,
+    this.restorationId,
+  })  : tabIndex = null,
+        assert(name.contains('/'), 'Route names must start with /');
+
+  RouteConfiguration.tab({
+    required this.name,
+    required this.child,
+    this.initial = false,
+    this.children = const [],
+    this.tabIndex,
     this.onExit,
     this.allowSnapshotting = true,
     this.fullscreenDialog = false,

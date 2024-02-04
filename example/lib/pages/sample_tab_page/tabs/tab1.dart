@@ -10,9 +10,9 @@ class Tab1 extends StatefulWidget {
 }
 
 class _Tab1State extends State<Tab1> {
+  int _counter = 0;
   @override
   Widget build(BuildContext context) {
-    PageView
     print("built tab 1");
     return Scaffold(
       appBar: AppBar(
@@ -23,16 +23,26 @@ class _Tab1State extends State<Tab1> {
         ),
       ),
       body: Center(
-        child: TextButton(
-          onPressed: () {
-            DockRouter.of(context).push(RouteNames.dummyRoute);
-          },
-          child: const Text('Tab 1'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {
+                DockRouter.of(context).push(RouteNames.dummyRoute);
+              },
+              child: const Text('Tab 1'),
+            ),
+            Text(_counter.toString()),
+          ],
         ),
       ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        child: Icon(Icons.add),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _counter++;
+          });
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
