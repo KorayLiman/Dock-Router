@@ -22,11 +22,6 @@ class DockNavigator extends StatefulWidget {
 }
 
 class DockNavigatorState extends State<DockNavigator> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void rebuild() {
     if (mounted) setState(() {});
   }
@@ -44,11 +39,13 @@ class DockNavigatorState extends State<DockNavigator> {
         DockNavigatorObserver(),
       ],
     );
-    return router.history.length == 1
-        ? navigator
-        : PopScope(
-            canPop: false,
-            child: navigator,
-          );
+    // TODO(KorayLiman): Handle nested tab route iOS swipe back gesture
+    if (!router.isRoot) {
+      return PopScope(
+        canPop: router.history.length == 1,
+        child: navigator,
+      );
+    }
+    return navigator;
   }
 }

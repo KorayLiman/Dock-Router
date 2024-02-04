@@ -1,7 +1,6 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:dock_router/src/delegate/dock_router_delegate.dart';
 import 'package:dock_router/src/delegate/router_delegate_base.dart';
-import 'package:dock_router/src/navigator/dock_navigator.dart';
 import 'package:flutter/material.dart';
 
 mixin RoutingOperationMixin {
@@ -38,6 +37,8 @@ abstract class DockRouterBase with RoutingOperationMixin {
   BackButtonDispatcher get backButtonDispatcher;
 
   List<RouteConfigurationBase> Function() get routes;
+
+  bool get isRoot;
 }
 
 class DockRouter extends DockRouterBase implements RouterConfig<Object> {
@@ -153,4 +154,7 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
   Object? get arguments => currentRoute.page.arguments;
 
   static bool isLoggingEnabled = true;
+
+  @override
+  bool get isRoot => backButtonDispatcher is RootBackButtonDispatcher;
 }

@@ -12,6 +12,7 @@ class Tab1 extends StatefulWidget {
 class _Tab1State extends State<Tab1> {
   @override
   Widget build(BuildContext context) {
+    PageView
     print("built tab 1");
     return Scaffold(
       appBar: AppBar(
@@ -28,6 +29,10 @@ class _Tab1State extends State<Tab1> {
           },
           child: const Text('Tab 1'),
         ),
+      ),
+      floatingActionButton: const FloatingActionButton(
+        onPressed: null,
+        child: Icon(Icons.add),
       ),
     );
   }

@@ -2,37 +2,37 @@ import 'dart:async';
 
 import 'package:dock_router/dock_router.dart';
 import 'package:dock_router/src/delegate/router_delegate_base.dart';
-import 'package:dock_router/src/navigator/dock_navigator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DockRouterDelegate extends RouterDelegateBase {
   DockRouterDelegate(this._router) : _routes = _router.routes {
-    final initialPageList = _routes().where((element) => element.initial).toList();
-    assert(initialPageList.length == 1, 'There should be exactly one initial page');
-    _history.add(initialPageList.first.createPage());
-    addListener(() {
-      _dockNavigatorStateKey.currentState?.rebuild();
-    });
+    final initialPagesIterable = _routes().where((element) => element.initial);
+
+    assert(initialPagesIterable.length == 1, 'There should be exactly one initial page');
+    _history.add(initialPagesIterable.first.createPage());
+    addListener(_rebuildNavigator);
   }
+
   DockRouterDelegate.nested(this._router) : _routes = _router.routes {
     _history.add(_routes().first.createPage());
-    addListener(() {
-      _dockNavigatorStateKey.currentState?.rebuild();
-    });
+    addListener(_rebuildNavigator);
   }
+
   DockRouterDelegate.tab(this._router, int tabIndex) : _routes = _router.routes {
     _history.add(
       _routes().firstWhere((element) => element.tabIndex == tabIndex).createPage(),
     );
-    addListener(() {
-      _dockNavigatorStateKey.currentState?.rebuild();
-    });
+    addListener(_rebuildNavigator);
   }
 
   final DockRouterBase _router;
 
   final List<DockPage<Object>> _history = [];
+
+  void _rebuildNavigator() {
+    _dockNavigatorStateKey.currentState?.rebuild();
+  }
 
   @override
   List<DockPage<Object>> get history => List.unmodifiable(_history);
@@ -68,7 +68,7 @@ class DockRouterDelegate extends RouterDelegateBase {
                 _history.remove(dockRoute.page);
                 dockRoute.page.completePop(result);
                 notifyListeners();
-                // TODO(KorayLiman): complete pop
+// TODO(KorayLiman): complete pop
               }
             });
             return false;
