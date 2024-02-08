@@ -26,7 +26,7 @@ class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
   }
 
   @override
-  Widget buildContent(BuildContext context) => page.child;
+  Widget buildContent(BuildContext context) => page.builder(context);
 
   @override
   bool get maintainState => page.maintainState;
@@ -55,7 +55,7 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
   }
 
   @override
-  Widget buildContent(BuildContext context) => page.child;
+  Widget buildContent(BuildContext context) => page.builder(context);
 
   @override
   String? get title => page.title;

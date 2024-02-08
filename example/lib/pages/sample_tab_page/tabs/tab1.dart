@@ -13,7 +13,6 @@ class _Tab1State extends State<Tab1> {
   int _counter = 0;
   @override
   Widget build(BuildContext context) {
-    print("built tab 1");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tab 1'),
@@ -28,7 +27,7 @@ class _Tab1State extends State<Tab1> {
           children: [
             TextButton(
               onPressed: () {
-                DockRouter.of(context).push(RouteNames.dummyRoute);
+                DockRouter.of(context, rootRouter: true).push(RouteNames.login);
               },
               child: const Text('Tab 1'),
             ),

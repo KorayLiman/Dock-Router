@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:dock_router/src/page/dock_page.dart';
+import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
 abstract class RouteConfigurationBase {
   String get name;
 
-  Widget get child;
+  WidgetBuilder get builder;
 
   int? get tabIndex;
 
@@ -27,12 +27,14 @@ abstract class RouteConfigurationBase {
   List<RouteConfigurationBase> get children;
 
   DockPage<T> createPage<T>([Object? arguments]);
+
+  GlobalKey<NestedRouterState>? get nestedRouterKey;
 }
 
 class RouteConfiguration extends RouteConfigurationBase {
   RouteConfiguration({
     required this.name,
-    required this.child,
+    required this.builder,
     this.initial = false,
     this.children = const [],
     this.onExit,
@@ -42,11 +44,13 @@ class RouteConfiguration extends RouteConfigurationBase {
     this.maintainState = true,
     this.restorationId,
   })  : tabIndex = null,
+        nestedRouterKey = null,
         assert(name.contains('/'), 'Route names must start with /');
 
   RouteConfiguration.tab({
     required this.name,
-    required this.child,
+    required this.builder,
+    this.nestedRouterKey,
     this.initial = false,
     this.children = const [],
     this.tabIndex,
@@ -62,7 +66,7 @@ class RouteConfiguration extends RouteConfigurationBase {
   final String name;
 
   @override
-  final Widget child;
+  final WidgetBuilder builder;
 
   @override
   final int? tabIndex;
@@ -92,12 +96,16 @@ class RouteConfiguration extends RouteConfigurationBase {
   final List<RouteConfiguration> children;
 
   @override
+  final GlobalKey<NestedRouterState>? nestedRouterKey;
+
+  @override
   DockPage<T> createPage<T>([Object? arguments]) {
     return Platform.isIOS
         ? DockCupertinoPage<T>(
             name: name,
+            configuration: this,
             key: UniqueKey(),
-            child: child,
+            builder: builder,
             allowSnapshotting: allowSnapshotting,
             fullscreenDialog: fullscreenDialog,
             barrierDismissible: barrierDismissible,
@@ -108,8 +116,9 @@ class RouteConfiguration extends RouteConfigurationBase {
           )
         : DockMaterialPage<T>(
             name: name,
+            configuration: this,
             key: UniqueKey(),
-            child: child,
+            builder: builder,
             allowSnapshotting: allowSnapshotting,
             fullscreenDialog: fullscreenDialog,
             barrierDismissible: barrierDismissible,

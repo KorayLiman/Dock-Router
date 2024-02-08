@@ -14,7 +14,7 @@ class _Tab2State extends State<Tab2> {
 
   @override
   Widget build(BuildContext context) {
-    print("built tab 2");
+    print('Tab2 build');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tab 2'),
