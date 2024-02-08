@@ -1,7 +1,7 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
-typedef TabsWidgetBuilder = Widget Function(BuildContext context, Widget child);
+typedef TabsWidgetBuilder = Widget Function(BuildContext context, Widget child, TabsBuilderState state);
 
 class TabsBuilder extends StatefulWidget {
   const TabsBuilder({required this.builder, super.key});
@@ -65,6 +65,7 @@ class TabsBuilderState extends State<TabsBuilder> {
                 key: _childrenTabRoutes.firstWhere((element) => element.tabIndex == index).nestedRouterKey,
                 tabIndex: index,
               ),
+              this,
             );
     }
 
@@ -77,6 +78,7 @@ class TabsBuilderState extends State<TabsBuilder> {
         key: _childrenTabRoutes.firstWhere((element) => element.tabIndex == index).nestedRouterKey,
         tabIndex: index,
       ),
+      this,
     );
   }
 
