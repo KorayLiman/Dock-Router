@@ -12,6 +12,10 @@ class TabsBuilder extends StatefulWidget {
     return state!;
   }
 
+  static TabsBuilderState? maybeOf(BuildContext context) {
+    return context.findAncestorStateOfType<TabsBuilderState>();
+  }
+
   final TabsWidgetBuilder builder;
 
   @override
@@ -20,6 +24,7 @@ class TabsBuilder extends StatefulWidget {
 
 class TabsBuilderState extends State<TabsBuilder> {
   late final List<DockPage<Object>> _tabs;
+  late final Iterable<RouteConfigurationBase> _childrenTabRoutes;
   final _activeTabListenable = ValueNotifier<int>(0);
   late final Map<int, bool> _indexBasedTabInitialization;
 
@@ -33,8 +38,8 @@ class TabsBuilderState extends State<TabsBuilder> {
   @override
   void initState() {
     final parent = DockRouter.of(context) as DockRouter;
-
-    _tabs = parent.routes().firstWhere((element) => element.name == parent.currentRoute.name).children.where((element) => element.tabIndex != null).map((e) => e.createPage<Object>()).toList();
+    _childrenTabRoutes = parent.routes().firstWhere((element) => element.name == parent.currentRoute.name).children.where((element) => element.tabIndex != null);
+    _tabs = _childrenTabRoutes.map((e) => e.createPage<Object>()).toList();
     _indexBasedTabInitialization = Map.fromEntries(
       _tabs.map(
         (e) => MapEntry(_tabs.indexOf(e), false),
@@ -56,7 +61,10 @@ class TabsBuilderState extends State<TabsBuilder> {
           ? const SizedBox.shrink()
           : widget.builder(
               context,
-              NestedRouter.tab(tabIndex: index),
+              NestedRouter.tab(
+                key: _childrenTabRoutes.firstWhere((element) => element.tabIndex == index).nestedRouterKey,
+                tabIndex: index,
+              ),
             );
     }
 
@@ -65,7 +73,10 @@ class TabsBuilderState extends State<TabsBuilder> {
     }
     return widget.builder(
       context,
-      NestedRouter.tab(tabIndex: index),
+      NestedRouter.tab(
+        key: _childrenTabRoutes.firstWhere((element) => element.tabIndex == index).nestedRouterKey,
+        tabIndex: index,
+      ),
     );
   }
 

@@ -19,7 +19,7 @@ class _HomeViewState extends State<HomeView> {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            router.push(RouteNames.nestedRouteExample);
+            router.push(RouteNames.sampleTabPage);
           },
           child: const Text('Some button'),
         ),

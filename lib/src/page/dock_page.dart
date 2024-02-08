@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dock_router/src/route/dock_routes.dart';
+import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
 typedef ExitCallback = FutureOr<bool> Function(BuildContext context)?;
@@ -39,14 +39,16 @@ abstract class DockPage<T> extends Page<T> {
 
   DockRoute get route;
 
-  Widget get child;
+  WidgetBuilder get builder;
+  RouteConfigurationBase get configuration;
 }
 
 class DockCupertinoPage<T> extends DockPage<T> {
   /// Creates a cupertino page.
   DockCupertinoPage({
-    required this.child,
+    required this.builder,
     required super.key,
+    required this.configuration,
     // this.initial = false,
     super.onExit,
     this.maintainState = true,
@@ -60,9 +62,12 @@ class DockCupertinoPage<T> extends DockPage<T> {
   });
 
   @override
-  final Widget child;
+  final WidgetBuilder builder;
 
   final String? title;
+
+  @override
+  final RouteConfigurationBase configuration;
 
   @override
   final bool maintainState;
@@ -94,10 +99,12 @@ class DockCupertinoPage<T> extends DockPage<T> {
 class DockMaterialPage<T> extends DockPage<T> {
   /// Creates a material page.
   DockMaterialPage({
-    required this.child,
+    required this.builder,
     required super.key,
+    required this.configuration,
     super.onExit,
     // this.initial = false,
+
     this.maintainState = true,
     this.fullscreenDialog = false,
     this.allowSnapshotting = true,
@@ -108,8 +115,10 @@ class DockMaterialPage<T> extends DockPage<T> {
   });
 
   @override
-  final Widget child;
+  final WidgetBuilder builder;
 
+  @override
+  final RouteConfigurationBase configuration;
   @override
   final bool maintainState;
 

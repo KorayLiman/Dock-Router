@@ -30,7 +30,6 @@ class DockNavigatorState extends State<DockNavigator> {
 
   @override
   Widget build(BuildContext context) {
-    router.backButtonDispatcher.takePriority();
     final navigator = Navigator(
       key: widget.navigatorKey,
       pages: widget.pages,
@@ -39,12 +38,30 @@ class DockNavigatorState extends State<DockNavigator> {
         DockNavigatorObserver(),
       ],
     );
-    // TODO(KorayLiman): Handle nested tab route iOS swipe back gesture
-    if (!router.isRoot) {
-      return PopScope(
-        canPop: router.history.length == 1,
-        child: navigator,
-      );
+
+    final tabsBuilder = TabsBuilder.maybeOf(context);
+    if (tabsBuilder == null) {
+      router.backButtonDispatcher.takePriority();
+      if (!router.isRoot && router.history.length != 1) {
+        return PopScope(
+          canPop: false,
+          child: navigator,
+        );
+      }
+    } else {
+      if (tabsBuilder.activeTabIndex == router.history.first.configuration.tabIndex) {
+        if (router.history.length == 1) {
+          (router.backButtonDispatcher as ChildBackButtonDispatcher).parent.takePriority();
+        } else {
+          router.backButtonDispatcher.takePriority();
+        }
+        if (!router.isRoot && router.history.length != 1) {
+          return PopScope(
+            canPop: false,
+            child: navigator,
+          );
+        }
+      }
     }
     return navigator;
   }
