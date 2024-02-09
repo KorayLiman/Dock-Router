@@ -6,14 +6,12 @@ class DockNavigator extends StatefulWidget {
   const DockNavigator({
     required DockRouterBase router,
     required GlobalKey<DockNavigatorState> key,
-    required this.pages,
     required this.navigatorKey,
     required this.onPopPage,
   })  : _router = router,
         super(key: key);
 
   final DockRouterBase _router;
-  final List<DockPage<Object>> pages;
   final GlobalKey<NavigatorState> navigatorKey;
   final bool Function(Route<dynamic> route, dynamic result) onPopPage;
 
@@ -32,7 +30,7 @@ class DockNavigatorState extends State<DockNavigator> {
   Widget build(BuildContext context) {
     final navigator = Navigator(
       key: widget.navigatorKey,
-      pages: widget.pages,
+      pages: router.history,
       onPopPage: widget.onPopPage,
       observers: [
         DockNavigatorObserver(),

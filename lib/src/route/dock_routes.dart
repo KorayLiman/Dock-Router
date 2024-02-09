@@ -1,4 +1,6 @@
-import 'package:dock_router/src/page/dock_page.dart';
+import 'dart:async';
+
+import 'package:dock_router/dock_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -55,7 +57,18 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
   }
 
   @override
-  Widget buildContent(BuildContext context) => page.builder(context);
+  Widget buildContent(BuildContext context) => PopScope(
+        canPop: page.onExit == null,
+        onPopInvoked: (result) async {
+          final result = await page.onExit?.call(context);
+          if (result ?? false) {
+            if (context.mounted) {
+              unawaited(DockRouter.of(context).pop(force: true));
+            }
+          }
+        },
+        child: page.builder(context),
+      );
 
   @override
   String? get title => page.title;

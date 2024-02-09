@@ -21,7 +21,7 @@ class _LoginViewState extends State<LoginView> {
           onPressed: () async {
             router.push(RouteNames.home);
           },
-          child: const Text('Go to login screen'),
+          child: const Text('Go to home screen'),
         ),
       ),
     );
