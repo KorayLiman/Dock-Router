@@ -14,7 +14,7 @@ mixin RoutingOperationMixin {
 
   Future<void> pushAndRemoveUntil(String name, {Object? arguments});
 
-  Future<bool> pop<T extends Object>({T? result, bool force = false});
+  Future<bool> pop<T extends Object>({T? result, bool ignoreOnExit = false});
 
   Future<void> popUntil(String name);
 
@@ -119,8 +119,8 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
   }
 
   @override
-  Future<bool> pop<T extends Object>({T? result, bool force = false}) {
-    return routerDelegate.pop<T>(result: result, force: force);
+  Future<bool> pop<T extends Object>({T? result, bool ignoreOnExit = false}) {
+    return routerDelegate.pop<T>(result: result, ignoreOnExit: ignoreOnExit);
   }
 
   @override

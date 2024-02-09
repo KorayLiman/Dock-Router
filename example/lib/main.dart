@@ -40,6 +40,8 @@ DockRouter router = DockRouter(
             ],
           ),
         );
+
+        await Future.delayed(const Duration(milliseconds: 160));
         return result ?? true;
       },
     ),

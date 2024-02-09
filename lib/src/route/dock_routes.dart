@@ -60,10 +60,12 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
   Widget buildContent(BuildContext context) => PopScope(
         canPop: page.onExit == null,
         onPopInvoked: (result) async {
-          final result = await page.onExit?.call(context);
-          if (result ?? false) {
-            if (context.mounted) {
-              unawaited(DockRouter.of(context).pop(force: true));
+          if (!result) {
+            final result = await page.onExit?.call(context);
+            if (result ?? false) {
+              if (context.mounted) {
+                unawaited(DockRouter.of(context).pop(ignoreOnExit: true));
+              }
             }
           }
         },

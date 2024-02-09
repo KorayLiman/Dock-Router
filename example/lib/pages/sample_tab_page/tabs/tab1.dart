@@ -17,10 +17,10 @@ class _Tab1State extends State<Tab1> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tab 1'),
-        leading: IconButton(
-          onPressed: DockRouter.parentOf(context).pop,
-          icon: const Icon(Icons.arrow_back),
-        ),
+        // leading: IconButton(
+        //   onPressed: DockRouter.parentOf(context).pop,
+        //   icon: const Icon(Icons.arrow_back),
+        // ),
       ),
       body: Center(
         child: Column(
