@@ -140,9 +140,9 @@ class DockRouterDelegate extends RouterDelegateBase {
   }
 
   @override
-  Future<bool> pop<T extends Object>({T? result, bool force = false}) async {
+  Future<bool> pop<T extends Object>({T? result, bool ignoreOnExit = false}) async {
     final onExitCallback = _history.last.onExit;
-    if (onExitCallback == null || force) {
+    if (onExitCallback == null || ignoreOnExit) {
       scheduleMicrotask(() {
         _history.removeLast().completePop(result);
         notifyListeners();
@@ -162,7 +162,8 @@ class DockRouterDelegate extends RouterDelegateBase {
           return false;
         }
       } else {
-        final popResult = await onExitCallback(_navigatorKey.currentContext!);
+        final callback = onExitCallback as bool Function(BuildContext);
+        final popResult = callback(_navigatorKey.currentContext!);
         if (popResult) {
           final page = _history.removeLast();
           scheduleMicrotask(() {
