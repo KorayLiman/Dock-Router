@@ -11,6 +11,7 @@ class Tab1 extends StatefulWidget {
 
 class _Tab1State extends State<Tab1> {
   int _counter = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +33,13 @@ class _Tab1State extends State<Tab1> {
               child: const Text('Tab 1'),
             ),
             Text(_counter.toString()),
+            const Hero(
+              tag: 'Hero Anim Test',
+              child: ElevatedButton(
+                onPressed: null,
+                child: Text('Hero Animation Test'),
+              ),
+            ),
           ],
         ),
       ),

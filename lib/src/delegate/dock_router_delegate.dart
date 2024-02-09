@@ -56,7 +56,6 @@ class DockRouterDelegate extends RouterDelegateBase {
     return DockNavigator(
       key: _dockNavigatorStateKey,
       router: _router,
-      pages: history,
       navigatorKey: _navigatorKey,
       onPopPage: (route, result) {
         if (route is DockRoute) {
@@ -68,7 +67,7 @@ class DockRouterDelegate extends RouterDelegateBase {
                 _history.remove(dockRoute.page);
                 dockRoute.page.completePop(result);
                 notifyListeners();
-// TODO(KorayLiman): complete pop
+                // TODO(KorayLiman): complete pop
               }
             });
             return false;
@@ -141,12 +140,11 @@ class DockRouterDelegate extends RouterDelegateBase {
   }
 
   @override
-  Future<bool> pop<T extends Object>([T? result]) async {
+  Future<bool> pop<T extends Object>({T? result, bool force = false}) async {
     final onExitCallback = _history.last.onExit;
-    if (onExitCallback == null) {
-      final page = _history.removeLast();
+    if (onExitCallback == null || force) {
       scheduleMicrotask(() {
-        page.completePop(result);
+        _history.removeLast().completePop(result);
         notifyListeners();
       });
       return SynchronousFuture(true);

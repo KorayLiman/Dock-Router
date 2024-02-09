@@ -17,12 +17,20 @@ class _HomeViewState extends State<HomeView> {
         title: const Text('Home Screen'),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            router.push(RouteNames.sampleTabPage);
-          },
-          child: const Text('Some button'),
+        child: Hero(
+          tag: 'Hero Anim Test',
+          child: ElevatedButton(
+            onPressed: () async {
+              router.push(RouteNames.sampleTabPage);
+            },
+            child: const Text('Some button'),
+          ),
         ),
+      ),
+      floatingActionButton: const FloatingActionButton.extended(
+        onPressed: null,
+        label: Text('Floating Action Button'),
+        icon: Icon(Icons.delete_outline_rounded),
       ),
     );
   }
