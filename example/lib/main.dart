@@ -72,6 +72,9 @@ DockRouter router = DockRouter(
       ],
     ),
   ],
+  navigatorObservers: [
+    DockNavigatorObserver(),
+  ],
 );
 
 class DockRouterApp extends StatelessWidget {

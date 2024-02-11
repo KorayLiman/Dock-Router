@@ -27,10 +27,11 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
-      floatingActionButton: const FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton.extended(
+        heroTag: UniqueKey().toString(),
         onPressed: null,
-        label: Text('Floating Action Button'),
-        icon: Icon(Icons.delete_outline_rounded),
+        label: const Text('Floating Action Button'),
+        icon: const Icon(Icons.delete_outline_rounded),
       ),
     );
   }

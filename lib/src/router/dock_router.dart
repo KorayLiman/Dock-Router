@@ -39,18 +39,22 @@ abstract class DockRouterBase with RoutingOperationMixin {
   List<RouteConfigurationBase> Function() get routes;
 
   bool get isRoot;
+
+  GlobalKey<NavigatorState> get navigatorKey;
+
+  List<NavigatorObserver>? get navigatorObservers;
 }
 
 class DockRouter extends DockRouterBase implements RouterConfig<Object> {
-  DockRouter({required this.routes}) : backButtonDispatcher = RootBackButtonDispatcher() {
+  DockRouter({required this.routes, this.navigatorObservers}) : backButtonDispatcher = RootBackButtonDispatcher() {
     routerDelegate = DockRouterDelegate(this);
   }
 
-  DockRouter.nested({required this.routes, required this.backButtonDispatcher}) {
+  DockRouter.nested({required this.routes, required this.backButtonDispatcher, this.navigatorObservers}) {
     routerDelegate = DockRouterDelegate.nested(this);
   }
 
-  DockRouter.tab({required this.routes, required int tabIndex, required this.backButtonDispatcher}) {
+  DockRouter.tab({required this.routes, required int tabIndex, required this.backButtonDispatcher, this.navigatorObservers}) {
     routerDelegate = DockRouterDelegate.tab(this, tabIndex);
   }
 
@@ -153,8 +157,12 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
   @override
   Object? get arguments => currentRoute.page.arguments;
 
-  static bool isLoggingEnabled = true;
-
   @override
   bool get isRoot => backButtonDispatcher is RootBackButtonDispatcher;
+
+  @override
+  GlobalKey<NavigatorState> get navigatorKey => routerDelegate.navigatorKey;
+
+  @override
+  final List<NavigatorObserver>? navigatorObservers;
 }

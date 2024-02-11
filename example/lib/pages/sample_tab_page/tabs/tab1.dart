@@ -17,10 +17,6 @@ class _Tab1State extends State<Tab1> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tab 1'),
-        // leading: IconButton(
-        //   onPressed: DockRouter.parentOf(context).pop,
-        //   icon: const Icon(Icons.arrow_back),
-        // ),
       ),
       body: Center(
         child: Column(
@@ -28,7 +24,7 @@ class _Tab1State extends State<Tab1> {
           children: [
             TextButton(
               onPressed: () {
-                DockRouter.of(context, rootRouter: true).push(RouteNames.login);
+                DockRouter.of(context).push(RouteNames.dummyRoute);
               },
               child: const Text('Tab 1'),
             ),
@@ -44,6 +40,7 @@ class _Tab1State extends State<Tab1> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: UniqueKey().toString(),
         onPressed: () {
           setState(() {
             _counter++;

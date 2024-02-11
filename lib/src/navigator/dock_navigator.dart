@@ -1,5 +1,4 @@
 import 'package:dock_router/dock_router.dart';
-import 'package:dock_router/src/navigator/observer.dart';
 import 'package:flutter/material.dart';
 
 class DockNavigator extends StatefulWidget {
@@ -32,9 +31,7 @@ class DockNavigatorState extends State<DockNavigator> {
       key: widget.navigatorKey,
       pages: router.history,
       onPopPage: widget.onPopPage,
-      observers: [
-        DockNavigatorObserver(),
-      ],
+      observers: router.navigatorObservers ?? const <NavigatorObserver>[],
     );
 
     final tabsBuilder = TabsBuilder.maybeOf(context);

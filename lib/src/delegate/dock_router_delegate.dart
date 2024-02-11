@@ -39,7 +39,7 @@ class DockRouterDelegate extends RouterDelegateBase {
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
-  GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
+  GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
   final List<RouteConfigurationBase> Function() _routes;
   final _dockNavigatorStateKey = GlobalKey<DockNavigatorState>();
 
@@ -58,6 +58,10 @@ class DockRouterDelegate extends RouterDelegateBase {
       router: _router,
       navigatorKey: _navigatorKey,
       onPopPage: (route, result) {
+        if (_history.length == 1) {
+          DockRouter.of(context).pop();
+          return false;
+        }
         if (route is DockRoute) {
           final dockRoute = route as DockRoute;
           if (dockRoute.page.onExit != null) {
@@ -100,9 +104,8 @@ class DockRouterDelegate extends RouterDelegateBase {
 
   @override
   Future<T?> pushReplacement<T extends Object>(String name, {Object? arguments}) async {
-    _history
-      ..removeLast()
-      ..add(_routes().where((element) => element.name == name).first.createPage<T>(arguments));
+    _history.last = _routes().where((element) => element.name == name).first.createPage<T>(arguments);
+
     notifyListeners();
     return (_history.last as DockPage<T>).waitForPop;
   }

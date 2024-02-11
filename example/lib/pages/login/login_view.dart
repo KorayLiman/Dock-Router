@@ -19,7 +19,7 @@ class _LoginViewState extends State<LoginView> {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            router.push(RouteNames.home);
+            router.pushReplacement(RouteNames.home);
           },
           child: const Text('Go to home screen'),
         ),

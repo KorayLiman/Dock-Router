@@ -7,6 +7,10 @@ class SampleTabPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TabsBuilder(
+      navigatorObserversConfig: {
+        0: [DockNavigatorObserver()],
+        1: [DockNavigatorObserver()],
+      },
       builder: (context, child, state) {
         return Scaffold(
           body: child,
