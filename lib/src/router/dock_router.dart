@@ -65,10 +65,10 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
   final BackButtonDispatcher backButtonDispatcher;
 
   @override
-  RouteInformationParser<Object>? get routeInformationParser => null;
+  RouteInformationParser<Object>? routeInformationParser;
 
   @override
-  RouteInformationProvider? get routeInformationProvider => null;
+  RouteInformationProvider? routeInformationProvider;
 
   @override
   late final RouterDelegateBase routerDelegate;
