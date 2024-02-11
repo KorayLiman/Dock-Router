@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class NestedRouter extends StatefulWidget {
   const NestedRouter({
     super.key,
+    this.navigatorObservers,
   }) : tabIndex = null;
 
-  const NestedRouter.tab({required this.tabIndex, super.key});
+  const NestedRouter.tab({required this.tabIndex, super.key, this.navigatorObservers});
 
+  final List<NavigatorObserver>? navigatorObservers;
   final int? tabIndex;
 
   @override
@@ -15,23 +17,23 @@ class NestedRouter extends StatefulWidget {
 }
 
 class NestedRouterState extends State<NestedRouter> {
-  late final DockRouter _nestedRouter;
-
-  DockRouter get router => _nestedRouter;
+  late final DockRouter _router;
 
   @override
   void initState() {
     final parent = DockRouter.of(context);
 
-    _nestedRouter = widget.tabIndex != null
+    _router = widget.tabIndex != null
         ? DockRouter.tab(
             tabIndex: widget.tabIndex!,
             routes: () => parent.routes().firstWhere((element) => element.name == parent.currentRoute.name).children,
             backButtonDispatcher: parent.backButtonDispatcher.createChildBackButtonDispatcher(),
+            navigatorObservers: widget.navigatorObservers,
           )
         : DockRouter.nested(
             routes: () => parent.routes().firstWhere((element) => element.name == parent.currentRoute.name).children,
             backButtonDispatcher: parent.backButtonDispatcher.createChildBackButtonDispatcher(),
+            navigatorObservers: widget.navigatorObservers,
           );
 
     super.initState();
@@ -39,6 +41,6 @@ class NestedRouterState extends State<NestedRouter> {
 
   @override
   Widget build(BuildContext context) {
-    return Router.withConfig(config: router);
+    return Router.withConfig(config: _router);
   }
 }

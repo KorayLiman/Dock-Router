@@ -2,6 +2,7 @@
 library dock_router;
 
 export 'src/navigator/dock_navigator.dart';
+export 'src/navigator/observer.dart';
 export 'src/page/dock_page.dart';
 export 'src/route/configuration.dart';
 export 'src/route/dock_routes.dart';

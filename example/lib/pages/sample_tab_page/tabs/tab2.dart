@@ -18,6 +18,12 @@ class _Tab2State extends State<Tab2> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tab 2'),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Center(
         child: Column(
@@ -34,6 +40,7 @@ class _Tab2State extends State<Tab2> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: UniqueKey().toString(),
         onPressed: () {
           setState(() => _counter++);
         },

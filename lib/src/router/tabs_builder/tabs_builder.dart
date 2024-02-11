@@ -1,10 +1,14 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
-typedef TabsWidgetBuilder = Widget Function(BuildContext context, Widget child, TabsBuilderState state);
+typedef TabsWidgetBuilder = Widget Function(BuildContext context, NestedRouter child, TabsBuilderState state);
 
 class TabsBuilder extends StatefulWidget {
-  const TabsBuilder({required this.builder, super.key});
+  const TabsBuilder({
+    required this.builder,
+    this.navigatorObserversConfig = const {},
+    super.key,
+  });
 
   static TabsBuilderState of(BuildContext context) {
     final state = context.findAncestorStateOfType<TabsBuilderState>();
@@ -17,6 +21,7 @@ class TabsBuilder extends StatefulWidget {
   }
 
   final TabsWidgetBuilder builder;
+  final Map<int, List<NavigatorObserver>> navigatorObserversConfig;
 
   @override
   State<TabsBuilder> createState() => TabsBuilderState();
@@ -56,14 +61,16 @@ class TabsBuilderState extends State<TabsBuilder> {
   }
 
   Widget _buildWidgetLazy(BuildContext context, int index) {
+    final currentTab = _childrenTabRoutes.firstWhere((element) => element.tabIndex == index);
     if (activeTabIndex != index) {
       return _indexBasedTabInitialization[index] == false
           ? const SizedBox.shrink()
           : widget.builder(
               context,
               NestedRouter.tab(
-                key: _childrenTabRoutes.firstWhere((element) => element.tabIndex == index).nestedRouterKey,
+                key: currentTab.nestedRouterKey,
                 tabIndex: index,
+                navigatorObservers: widget.navigatorObserversConfig[index],
               ),
               this,
             );
@@ -75,8 +82,9 @@ class TabsBuilderState extends State<TabsBuilder> {
     return widget.builder(
       context,
       NestedRouter.tab(
-        key: _childrenTabRoutes.firstWhere((element) => element.tabIndex == index).nestedRouterKey,
+        key: currentTab.nestedRouterKey,
         tabIndex: index,
+        navigatorObservers: widget.navigatorObserversConfig[index],
       ),
       this,
     );

@@ -3,4 +3,7 @@ import 'package:flutter/material.dart';
 
 abstract class RouterDelegateBase extends RouterDelegate<RouteConfigurationBase> with ChangeNotifier, RoutingOperationMixin, PopNavigatorRouterDelegateMixin {
   List<DockPage<Object>> get history;
+
+  @override
+  GlobalKey<NavigatorState> get navigatorKey;
 }
