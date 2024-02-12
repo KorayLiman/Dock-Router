@@ -1,9 +1,15 @@
 import 'dart:async';
 
 import 'package:dock_router/dock_router.dart';
-import 'package:dock_router/src/delegate/router_delegate_base.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+abstract class RouterDelegateBase extends RouterDelegate<RouteConfigurationBase> with ChangeNotifier, PopNavigatorRouterDelegateMixin implements RoutingUtilities {
+  List<DockPage<Object>> get history;
+
+  @override
+  GlobalKey<NavigatorState> get navigatorKey;
+}
 
 class DockRouterDelegate extends RouterDelegateBase {
   DockRouterDelegate(this._router) : _routes = _router.routes {

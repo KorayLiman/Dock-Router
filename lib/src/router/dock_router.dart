@@ -1,6 +1,4 @@
 import 'package:dock_router/dock_router.dart';
-import 'package:dock_router/src/delegate/dock_router_delegate.dart';
-import 'package:dock_router/src/delegate/router_delegate_base.dart';
 import 'package:flutter/material.dart';
 
 abstract interface class RoutingUtilities {
