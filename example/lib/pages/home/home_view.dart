@@ -29,7 +29,7 @@ class _HomeViewState extends State<HomeView> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: UniqueKey().toString(),
-        onPressed: null,
+        onPressed: router.pop,
         label: const Text('Floating Action Button'),
         icon: const Icon(Icons.delete_outline_rounded),
       ),

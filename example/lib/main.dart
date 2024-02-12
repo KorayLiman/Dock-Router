@@ -23,27 +23,6 @@ DockRouter router = DockRouter(
     RouteConfiguration(
       name: RouteNames.home,
       builder: (context) => const HomeView(),
-      onExit: (context) async {
-        final result = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Are you sure?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Yes'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('No'),
-              ),
-            ],
-          ),
-        );
-
-        await Future.delayed(const Duration(milliseconds: 160));
-        return result ?? true;
-      },
     ),
     RouteConfiguration(
       name: RouteNames.sampleTabPage,
@@ -75,6 +54,26 @@ DockRouter router = DockRouter(
   navigatorObservers: [
     DockNavigatorObserver(),
   ],
+  androidOnExitApplication: (context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Are you sure to exit application?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Yes'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('No'),
+          ),
+        ],
+      ),
+    );
+
+    return result ?? false;
+  },
 );
 
 class DockRouterApp extends StatelessWidget {
