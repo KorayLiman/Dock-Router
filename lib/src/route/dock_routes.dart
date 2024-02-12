@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dock_router/dock_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 abstract interface class DockRoute {
   static DockRoute of(BuildContext context) {
@@ -28,7 +29,23 @@ class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
   }
 
   @override
-  Widget buildContent(BuildContext context) => page.builder(context);
+  Widget buildContent(BuildContext context) {
+    final router = DockRouter.of(context);
+    if (router.history.length == 1 && router.isRoot && (router as DockRouter).androidOnExitApplication != null) {
+      return PopScope(
+        canPop: false,
+        onPopInvoked: (result) async {
+          final onExitResult = await router.androidOnExitApplication!(context);
+          if (onExitResult) {
+            unawaited(SystemNavigator.pop());
+          }
+        },
+        child: page.builder(context),
+      );
+    }
+
+    return page.builder(context);
+  }
 
   @override
   bool get maintainState => page.maintainState;

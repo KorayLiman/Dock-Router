@@ -46,17 +46,32 @@ abstract class DockRouterBase with RoutingOperationMixin {
 }
 
 class DockRouter extends DockRouterBase implements RouterConfig<Object> {
-  DockRouter({required this.routes, this.navigatorObservers}) : backButtonDispatcher = RootBackButtonDispatcher() {
+  DockRouter({
+    required this.routes,
+    this.navigatorObservers,
+    this.androidOnExitApplication,
+  }) : backButtonDispatcher = RootBackButtonDispatcher() {
     routerDelegate = DockRouterDelegate(this);
   }
 
-  DockRouter.nested({required this.routes, required this.backButtonDispatcher, this.navigatorObservers}) {
+  DockRouter.nested({
+    required this.routes,
+    required this.backButtonDispatcher,
+    this.navigatorObservers,
+  }) : androidOnExitApplication = null {
     routerDelegate = DockRouterDelegate.nested(this);
   }
 
-  DockRouter.tab({required this.routes, required int tabIndex, required this.backButtonDispatcher, this.navigatorObservers}) {
+  DockRouter.tab({
+    required this.routes,
+    required int tabIndex,
+    required this.backButtonDispatcher,
+    this.navigatorObservers,
+  }) : androidOnExitApplication = null {
     routerDelegate = DockRouterDelegate.tab(this, tabIndex);
   }
+
+  final ExitCallback? androidOnExitApplication;
 
   @override
   final List<RouteConfigurationBase> Function() routes;

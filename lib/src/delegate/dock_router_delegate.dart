@@ -152,7 +152,7 @@ class DockRouterDelegate extends RouterDelegateBase {
       });
       return SynchronousFuture(true);
     } else {
-      if (onExitCallback is Future) {
+      if (onExitCallback is Future<bool> Function(BuildContext)) {
         final popResult = await onExitCallback(_navigatorKey.currentContext!);
         if (popResult) {
           final page = _history.removeLast();
