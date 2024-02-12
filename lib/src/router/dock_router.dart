@@ -3,7 +3,7 @@ import 'package:dock_router/src/delegate/dock_router_delegate.dart';
 import 'package:dock_router/src/delegate/router_delegate_base.dart';
 import 'package:flutter/material.dart';
 
-mixin RoutingOperationMixin {
+abstract interface class RoutingUtilities {
   Future<T?> push<T extends Object>(String name, {Object? arguments});
 
   Future<T?> pushReplacement<T extends Object>(String name, {Object? arguments});
@@ -23,7 +23,7 @@ mixin RoutingOperationMixin {
   Future<void> removeWhere(bool Function(DockRoute route) predicate);
 }
 
-abstract class DockRouterBase with RoutingOperationMixin {
+abstract class DockRouterBase implements RoutingUtilities {
   List<DockPage<Object>> get history;
 
   DockRoute get currentRoute;
