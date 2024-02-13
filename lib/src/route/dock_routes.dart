@@ -30,7 +30,7 @@ class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
 
   @override
   Widget buildContent(BuildContext context) {
-    final router = DockRouter.of(context);
+    final router = context.router;
     if (router.history.length == 1 && router.isRoot && (router as DockRouter).androidOnExitApplication != null) {
       return PopScope(
         canPop: false,
@@ -78,7 +78,7 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
             final result = await page.onExit?.call(context);
             if (result ?? false) {
               if (context.mounted) {
-                unawaited(DockRouter.of(context).pop(ignoreOnExit: true));
+                unawaited(context.router.pop(ignoreOnExit: true));
               }
             }
           }

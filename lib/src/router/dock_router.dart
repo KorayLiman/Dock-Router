@@ -30,7 +30,7 @@ abstract class DockRouterBase implements RoutingUtilities {
 
   Object? get arguments;
 
-  static const routerLoggerName = 'DOCK ROUTER';
+  static const logName = 'DOCK ROUTER';
 
   BackButtonDispatcher get backButtonDispatcher;
 

@@ -43,7 +43,7 @@ DockRouter router = DockRouter(
           builder: (context) => Scaffold(
             appBar: AppBar(),
             floatingActionButton: FloatingActionButton(
-              onPressed: DockRouter.of(context).pop,
+              onPressed: context.router.pop,
               child: const Icon(Icons.arrow_back),
             ),
           ),
