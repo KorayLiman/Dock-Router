@@ -30,8 +30,8 @@ abstract class DockPage<T> extends Page<T> {
   bool get barrierDismissible;
 
   bool get fullscreenDialog;
-  //
-  // bool get maintainState;
+
+  bool get maintainState;
 
   final ExitCallback onExit;
 
@@ -51,7 +51,7 @@ class DockCupertinoPage<T> extends DockPage<T> {
     required this.configuration,
     // this.initial = false,
     super.onExit,
-    // this.maintainState = true,
+    this.maintainState = true,
     this.title,
     this.fullscreenDialog = false,
     this.allowSnapshotting = true,
@@ -69,8 +69,8 @@ class DockCupertinoPage<T> extends DockPage<T> {
   @override
   final RouteConfigurationBase configuration;
 
-  // @override
-  // final bool maintainState;
+  @override
+  final bool maintainState;
 
   @override
   DockCupertinoRoute<T> createRoute(BuildContext context) {
@@ -105,7 +105,7 @@ class DockMaterialPage<T> extends DockPage<T> {
     super.onExit,
     // this.initial = false,
 
-    // this.maintainState = true,
+    this.maintainState = true,
     this.fullscreenDialog = false,
     this.allowSnapshotting = true,
     this.barrierDismissible = false,
@@ -119,8 +119,8 @@ class DockMaterialPage<T> extends DockPage<T> {
 
   @override
   final RouteConfigurationBase configuration;
-  // @override
-  // final bool maintainState;
+  @override
+  final bool maintainState;
 
   @override
   final bool allowSnapshotting;

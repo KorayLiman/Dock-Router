@@ -21,7 +21,7 @@ class NestedRouterState extends State<NestedRouter> {
 
   @override
   void initState() {
-    final parent = DockRouter.of(context);
+    final parent = context.router;
 
     _router = widget.tabIndex != null
         ? DockRouter.tab(

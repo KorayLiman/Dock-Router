@@ -65,7 +65,7 @@ class DockRouterDelegate extends RouterDelegateBase {
       navigatorKey: _navigatorKey,
       onPopPage: (route, result) {
         if (_history.length == 1) {
-          DockRouter.of(context).pop();
+          context.router.pop();
           return false;
         }
         if (route is DockRoute) {

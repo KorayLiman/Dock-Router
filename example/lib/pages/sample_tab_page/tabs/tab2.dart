@@ -31,7 +31,7 @@ class _Tab2State extends State<Tab2> {
           children: [
             TextButton(
               onPressed: () {
-                DockRouter.of(context).push(RouteNames.dummyRoute);
+                context.router.push(RouteNames.dummyRoute);
               },
               child: const Text('Tab 2'),
             ),
