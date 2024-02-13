@@ -51,9 +51,6 @@ class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
   bool get maintainState => page.maintainState;
 
   @override
-  bool get fullscreenDialog => page.fullscreenDialog;
-
-  @override
   String get debugLabel => '${super.debugLabel}(${page.name})';
 
   @override
@@ -94,9 +91,6 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
 
   @override
   bool get maintainState => page.maintainState;
-
-  @override
-  bool get fullscreenDialog => page.fullscreenDialog;
 
   @override
   String get debugLabel => '${super.debugLabel}(${page.name})';
