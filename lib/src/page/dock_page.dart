@@ -35,11 +35,10 @@ abstract class DockPage<T> extends Page<T> {
 
   final ExitCallback onExit;
 
-  late final DockRoute _route;
-
   DockRoute get route;
 
   WidgetBuilder get builder;
+
   RouteConfigurationBase get configuration;
 }
 
@@ -74,13 +73,12 @@ class DockCupertinoPage<T> extends DockPage<T> {
 
   @override
   DockCupertinoRoute<T> createRoute(BuildContext context) {
-    _route = DockCupertinoRoute(
+    return route = DockCupertinoRoute<T>(
       page: this,
       allowSnapshotting: allowSnapshotting,
       barrierDismissible: barrierDismissible,
       fullscreenDialog: fullscreenDialog,
     );
-    return _route as DockCupertinoRoute<T>;
   }
 
   @override
@@ -93,7 +91,7 @@ class DockCupertinoPage<T> extends DockPage<T> {
   final bool fullscreenDialog;
 
   @override
-  DockRoute get route => _route;
+  late final DockCupertinoRoute<T> route;
 }
 
 class DockMaterialPage<T> extends DockPage<T> {
@@ -132,16 +130,15 @@ class DockMaterialPage<T> extends DockPage<T> {
   final bool fullscreenDialog;
 
   @override
-  DockRoute get route => _route;
+  late final DockMaterialRoute<T> route;
 
   @override
   DockMaterialRoute<T> createRoute(BuildContext context) {
-    _route = DockMaterialRoute(
+    return route = DockMaterialRoute<T>(
       page: this,
       allowSnapshotting: allowSnapshotting,
       barrierDismissible: barrierDismissible,
       fullscreenDialog: fullscreenDialog,
     );
-    return _route as DockMaterialRoute<T>;
   }
 }
