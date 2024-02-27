@@ -1,17 +1,11 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:dock_router/dock_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-abstract class RouterDelegateBase extends RouterDelegate<RouteConfigurationBase> with ChangeNotifier, PopNavigatorRouterDelegateMixin implements RoutingUtilities {
-  List<DockPage<Object>> get history;
-
-  @override
-  GlobalKey<NavigatorState> get navigatorKey;
-}
-
-class DockRouterDelegate extends RouterDelegateBase {
+class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with ChangeNotifier, PopNavigatorRouterDelegateMixin implements RoutingUtilities {
   DockRouterDelegate(this._router) : _routes = _router.routes {
     final initialPagesIterable = _routes().where((element) => element.initial);
 
@@ -40,8 +34,7 @@ class DockRouterDelegate extends RouterDelegateBase {
     _dockNavigatorStateKey.currentState?.rebuild();
   }
 
-  @override
-  List<DockPage<Object>> get history => List.unmodifiable(_history);
+  UnmodifiableListView<DockPage<Object>> get history => UnmodifiableListView(_history);
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override

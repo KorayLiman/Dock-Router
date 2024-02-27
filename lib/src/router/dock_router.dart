@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +24,7 @@ abstract interface class RoutingUtilities {
 }
 
 abstract class DockRouterBase implements RoutingUtilities {
-  List<DockPage<Object>> get history;
+  UnmodifiableListView<DockPage<Object>> get history;
 
   DockRoute get currentRoute;
 
@@ -84,7 +86,7 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
   RouteInformationProvider? routeInformationProvider;
 
   @override
-  late final RouterDelegateBase routerDelegate;
+  late final DockRouterDelegate routerDelegate;
 
   static DockRouterBase of(BuildContext context, {bool rootRouter = false}) {
     if (!rootRouter) {
@@ -159,7 +161,7 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
   ////
   //////////////////////
   @override
-  List<DockPage<Object>> get history => List.unmodifiable(routerDelegate.history);
+  UnmodifiableListView<DockPage<Object>> get history => routerDelegate.history;
 
   @override
   DockRoute get currentRoute => history.last.route;
