@@ -44,7 +44,7 @@ class DockNavigatorState extends State<DockNavigator> {
         );
       }
     } else {
-      if (tabsBuilder.activeTabIndex == router.history.first.configuration.tabIndex) {
+      if (tabsBuilder.activeIndex == router.history.first.configuration.tabIndex) {
         if (router.history.length == 1) {
           (router.backButtonDispatcher as ChildBackButtonDispatcher).parent.takePriority();
         } else {
