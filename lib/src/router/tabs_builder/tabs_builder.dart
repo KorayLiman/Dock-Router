@@ -33,7 +33,7 @@ class TabsBuilderState extends State<TabsBuilder> {
   final _activeTabListenable = ValueNotifier<int>(0);
   late final Map<int, bool> _indexBasedTabInitialization;
 
-  int get activeTabIndex => _activeTabListenable.value;
+  int get activeIndex => _activeTabListenable.value;
 
   // ignore: use_setters_to_change_properties
   void setActiveIndex(int index) {
@@ -62,7 +62,7 @@ class TabsBuilderState extends State<TabsBuilder> {
 
   Widget _buildWidgetLazy(BuildContext context, int index) {
     final currentTab = _childrenTabRoutes.firstWhere((element) => element.tabIndex == index);
-    if (activeTabIndex != index) {
+    if (activeIndex != index) {
       return _indexBasedTabInitialization[index] == false
           ? const SizedBox.shrink()
           : widget.builder(
