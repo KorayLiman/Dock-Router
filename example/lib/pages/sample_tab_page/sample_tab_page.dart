@@ -16,7 +16,7 @@ class SampleTabPage extends StatelessWidget {
           body: child,
           bottomNavigationBar: NavigationBar(
             onDestinationSelected: state.setActiveIndex,
-            selectedIndex: state.activeTabIndex,
+            selectedIndex: state.activeIndex,
             destinations: const [
               NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
               NavigationDestination(icon: Icon(Icons.business), label: 'Business'),
