@@ -40,14 +40,12 @@ class DockMaterialRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
             unawaited(SystemNavigator.pop());
           }
         },
-        child: _child ??= page.builder(context),
+        child: page.builder(context),
       );
     }
 
-    return _child ??= page.builder(context);
+    return page.builder(context);
   }
-
-  Widget? _child;
 
   @override
   bool get maintainState => page.maintainState;
@@ -85,10 +83,8 @@ class DockCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMi
             }
           }
         },
-        child: _child ??= page.builder(context),
+        child: page.builder(context),
       );
-
-  Widget? _child;
 
   @override
   String? get title => page.title;
