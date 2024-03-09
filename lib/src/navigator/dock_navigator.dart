@@ -34,30 +34,31 @@ class DockNavigatorState extends State<DockNavigator> {
       observers: router.navigatorObservers ?? const <NavigatorObserver>[],
     );
 
-    final tabsBuilder = TabsBuilder.maybeOf(context);
-    if (tabsBuilder == null) {
-      router.backButtonDispatcher.takePriority();
-      if (!router.isRoot && router.history.length != 1) {
-        return PopScope(
-          canPop: false,
-          child: navigator,
-        );
-      }
-    } else {
-      if (tabsBuilder.activeIndex == router.history.first.configuration.tabIndex) {
-        if (router.history.length == 1) {
-          (router.backButtonDispatcher as ChildBackButtonDispatcher).parent.takePriority();
-        } else {
-          router.backButtonDispatcher.takePriority();
-        }
-        if (!router.isRoot && router.history.length != 1) {
-          return PopScope(
-            canPop: false,
-            child: navigator,
-          );
-        }
-      }
+    // final tabsBuilder = TabsBuilder.maybeOf(context);
+    // if (tabsBuilder == null) {
+    router.backButtonDispatcher.takePriority();
+    if (!router.isRoot && router.history.length != 1) {
+      return PopScope(
+        canPop: false,
+        child: navigator,
+      );
     }
+    // }
+    // else {
+    //   if (tabsBuilder.activeIndex == router.history.first.configuration.tabIndex) {
+    //     if (router.history.length == 1) {
+    //       (router.backButtonDispatcher as ChildBackButtonDispatcher).parent.takePriority();
+    //     } else {
+    //       router.backButtonDispatcher.takePriority();
+    //     }
+    //     if (!router.isRoot && router.history.length != 1) {
+    //       return PopScope(
+    //         canPop: false,
+    //         child: navigator,
+    //       );
+    //     }
+    //   }
+    // }
     return navigator;
   }
 }

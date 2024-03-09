@@ -28,26 +28,30 @@ DockRouter router = DockRouter(
       name: RouteNames.sampleTabPage,
       builder: (context) => const SampleTabPage(),
       children: [
-        RouteConfiguration.tab(
-          name: RouteNames.tab1,
-          tabIndex: 0,
-          builder: (context) => const Tab1(),
-        ),
-        RouteConfiguration.tab(
-          name: RouteNames.tab2,
-          tabIndex: 1,
-          builder: (context) => const Tab2(),
-        ),
-        RouteConfiguration(
-          name: RouteNames.dummyRoute,
-          builder: (context) => Scaffold(
-            appBar: AppBar(),
-            floatingActionButton: FloatingActionButton(
-              onPressed: context.router.pop,
-              child: const Icon(Icons.arrow_back),
+        RouteConfiguration.tab(name: RouteNames.tab1, tabIndex: 0, builder: (context) => const Tab1(), children: [
+          RouteConfiguration(
+            name: RouteNames.dummyRoute,
+            builder: (context) => Scaffold(
+              appBar: AppBar(),
+              floatingActionButton: FloatingActionButton(
+                onPressed: context.router.pop,
+                child: const Icon(Icons.arrow_back),
+              ),
             ),
           ),
-        ),
+        ]),
+        RouteConfiguration.tab(name: RouteNames.tab2, tabIndex: 1, builder: (context) => const Tab2(), children: [
+          RouteConfiguration(
+            name: RouteNames.dummyRoute2,
+            builder: (context) => Scaffold(
+              appBar: AppBar(),
+              floatingActionButton: FloatingActionButton(
+                onPressed: context.router.pop,
+                child: const Icon(Icons.arrow_back),
+              ),
+            ),
+          ),
+        ]),
       ],
     ),
   ],
