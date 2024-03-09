@@ -28,7 +28,7 @@ abstract class RouteConfigurationBase {
 
   DockPage<T> createPage<T>([Object? arguments]);
 
-  GlobalKey<NestedRouterState>? get nestedRouterKey;
+  GlobalKey<NestedRouterWidgetState>? get nestedRouterKey;
 }
 
 class RouteConfiguration extends RouteConfigurationBase {
@@ -96,7 +96,7 @@ class RouteConfiguration extends RouteConfigurationBase {
   final List<RouteConfiguration> children;
 
   @override
-  final GlobalKey<NestedRouterState>? nestedRouterKey;
+  final GlobalKey<NestedRouterWidgetState>? nestedRouterKey;
 
   @override
   DockPage<T> createPage<T>([Object? arguments]) {

@@ -14,15 +14,8 @@ class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with Cha
     addListener(_rebuildNavigator);
   }
 
-  DockRouterDelegate.nested(this._router) : _routes = _router.routes {
-    _history.add(_routes().first.createPage());
-    addListener(_rebuildNavigator);
-  }
-
-  DockRouterDelegate.tab(this._router, int tabIndex) : _routes = _router.routes {
-    _history.add(
-      _routes().firstWhere((element) => element.tabIndex == tabIndex).createPage(),
-    );
+  DockRouterDelegate.nested(this._router, {RouteConfigurationBase? initial}) : _routes = _router.routes {
+    _history.add(initial?.createPage() ?? _routes().first.createPage());
     addListener(_rebuildNavigator);
   }
 

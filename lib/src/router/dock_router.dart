@@ -57,18 +57,10 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
   DockRouter.nested({
     required this.routes,
     required this.backButtonDispatcher,
+    RouteConfigurationBase? initial,
     this.navigatorObservers,
   }) : androidOnExitApplication = null {
-    routerDelegate = DockRouterDelegate.nested(this);
-  }
-
-  DockRouter.tab({
-    required this.routes,
-    required int tabIndex,
-    required this.backButtonDispatcher,
-    this.navigatorObservers,
-  }) : androidOnExitApplication = null {
-    routerDelegate = DockRouterDelegate.tab(this, tabIndex);
+    routerDelegate = DockRouterDelegate.nested(this, initial: initial);
   }
 
   final ExitCallback? androidOnExitApplication;

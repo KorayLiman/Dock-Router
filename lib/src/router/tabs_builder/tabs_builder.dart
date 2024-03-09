@@ -1,7 +1,7 @@
 import 'package:dock_router/dock_router.dart';
 import 'package:flutter/material.dart';
 
-typedef TabsWidgetBuilder = Widget Function(BuildContext context, NestedRouter child, TabsBuilderState state);
+typedef TabsWidgetBuilder = Widget Function(BuildContext context, TabsRouterWidget child, TabsBuilderState state);
 
 class TabsBuilder extends StatefulWidget {
   const TabsBuilder({
@@ -33,6 +33,8 @@ class TabsBuilderState extends State<TabsBuilder> {
   final _activeTabListenable = ValueNotifier<int>(0);
   late final Map<int, bool> _indexBasedTabInitialization;
 
+  late final DockRouter parentRouter;
+
   int get activeIndex => _activeTabListenable.value;
 
   // ignore: use_setters_to_change_properties
@@ -42,8 +44,8 @@ class TabsBuilderState extends State<TabsBuilder> {
 
   @override
   void initState() {
-    final parent = context.router as DockRouter;
-    _childrenTabRoutes = parent.routes().firstWhere((element) => element.name == parent.currentRoute.name).children.where((element) => element.tabIndex != null);
+    parentRouter = context.router as DockRouter;
+    _childrenTabRoutes = parentRouter.routes().firstWhere((element) => element.name == parentRouter.currentRoute.name).children.where((element) => element.tabIndex != null);
     _tabs = _childrenTabRoutes.map((e) => e.createPage<Object>()).toList();
     _indexBasedTabInitialization = Map.fromEntries(
       _tabs.map(
@@ -61,15 +63,15 @@ class TabsBuilderState extends State<TabsBuilder> {
   }
 
   Widget _buildWidgetLazy(BuildContext context, int index) {
-    final currentTab = _childrenTabRoutes.firstWhere((element) => element.tabIndex == index);
+    // final currentTab = _childrenTabRoutes.firstWhere((element) => element.tabIndex == index);
     if (activeIndex != index) {
       return _indexBasedTabInitialization[index] == false
           ? const SizedBox.shrink()
           : widget.builder(
               context,
-              NestedRouter.tab(
-                key: currentTab.nestedRouterKey,
-                tabIndex: index,
+              TabsRouterWidget(
+                index: index,
+                parentRouter: parentRouter,
                 navigatorObservers: widget.navigatorObserversConfig[index],
               ),
               this,
@@ -81,9 +83,9 @@ class TabsBuilderState extends State<TabsBuilder> {
     }
     return widget.builder(
       context,
-      NestedRouter.tab(
-        key: currentTab.nestedRouterKey,
-        tabIndex: index,
+      TabsRouterWidget(
+        index: index,
+        parentRouter: parentRouter,
         navigatorObservers: widget.navigatorObserversConfig[index],
       ),
       this,
