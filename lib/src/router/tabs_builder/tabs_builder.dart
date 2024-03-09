@@ -33,7 +33,7 @@ class TabsBuilderState extends State<TabsBuilder> {
   final _activeTabListenable = ValueNotifier<int>(0);
   late final Map<int, bool> _indexBasedTabInitialization;
 
-  late final DockRouter parentRouter;
+  late final DockRouter _parentRouter;
 
   int get activeIndex => _activeTabListenable.value;
 
@@ -44,8 +44,8 @@ class TabsBuilderState extends State<TabsBuilder> {
 
   @override
   void initState() {
-    parentRouter = context.router as DockRouter;
-    _childrenTabRoutes = parentRouter.routes().firstWhere((element) => element.name == parentRouter.currentRoute.name).children.where((element) => element.tabIndex != null);
+    _parentRouter = context.router as DockRouter;
+    _childrenTabRoutes = _parentRouter.routes().firstWhere((element) => element.name == _parentRouter.currentRoute.name).children.where((element) => element.tabIndex != null);
     _tabs = _childrenTabRoutes.map((e) => e.createPage<Object>()).toList();
     _indexBasedTabInitialization = Map.fromEntries(
       _tabs.map(
@@ -71,7 +71,7 @@ class TabsBuilderState extends State<TabsBuilder> {
               context,
               TabsRouterWidget(
                 index: index,
-                parentRouter: parentRouter,
+                parentRouter: _parentRouter,
                 navigatorObservers: widget.navigatorObserversConfig[index],
               ),
               this,
@@ -85,7 +85,7 @@ class TabsBuilderState extends State<TabsBuilder> {
       context,
       TabsRouterWidget(
         index: index,
-        parentRouter: parentRouter,
+        parentRouter: _parentRouter,
         navigatorObservers: widget.navigatorObserversConfig[index],
       ),
       this,
