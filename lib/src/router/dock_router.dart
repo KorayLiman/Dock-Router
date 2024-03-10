@@ -50,7 +50,8 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
     required this.routes,
     this.navigatorObservers,
     this.androidOnExitApplication,
-  }) : backButtonDispatcher = RootBackButtonDispatcher() {
+  })  : backButtonDispatcher = RootBackButtonDispatcher(),
+        tabIndex = null {
     routerDelegate = DockRouterDelegate(this);
   }
 
@@ -59,9 +60,22 @@ class DockRouter extends DockRouterBase implements RouterConfig<Object> {
     required this.backButtonDispatcher,
     RouteConfigurationBase? initial,
     this.navigatorObservers,
-  }) : androidOnExitApplication = null {
+  })  : androidOnExitApplication = null,
+        tabIndex = null {
     routerDelegate = DockRouterDelegate.nested(this, initial: initial);
   }
+
+  DockRouter.tab({
+    required this.routes,
+    required this.backButtonDispatcher,
+    required int this.tabIndex,
+    required RouteConfigurationBase initial,
+    this.navigatorObservers,
+  }) : androidOnExitApplication = null {
+    routerDelegate = DockRouterDelegate.tab(this, index: tabIndex!, initial: initial);
+  }
+
+  final int? tabIndex;
 
   final ExitCallback? androidOnExitApplication;
 

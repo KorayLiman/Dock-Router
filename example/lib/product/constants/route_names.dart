@@ -7,4 +7,5 @@ abstract class RouteNames {
   static const nestedRouteExample = '/nestedRouteExample';
   static const dummyRoute = '/dummyRoute';
   static const dummyRoute2 = '/dummyRoute2';
+  static const detail = '/detail';
 }

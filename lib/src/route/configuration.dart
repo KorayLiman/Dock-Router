@@ -28,7 +28,7 @@ abstract class RouteConfigurationBase {
 
   DockPage<T> createPage<T>([Object? arguments]);
 
-  GlobalKey<NestedRouterWidgetState>? get nestedRouterKey;
+  GlobalKey<TabsRouterWidgetState>? get nestedRouterKey;
 }
 
 class RouteConfiguration extends RouteConfigurationBase {
@@ -47,6 +47,7 @@ class RouteConfiguration extends RouteConfigurationBase {
         nestedRouterKey = null,
         assert(name.contains('/'), 'Route names must start with /');
 
+  /*
   RouteConfiguration.tab({
     required this.name,
     required this.builder,
@@ -61,7 +62,7 @@ class RouteConfiguration extends RouteConfigurationBase {
     this.maintainState = true,
     this.restorationId,
   }) : assert(name.contains('/'), 'Route names must start with /');
-
+*/
   @override
   final String name;
 
@@ -96,7 +97,7 @@ class RouteConfiguration extends RouteConfigurationBase {
   final List<RouteConfiguration> children;
 
   @override
-  final GlobalKey<NestedRouterWidgetState>? nestedRouterKey;
+  final GlobalKey<TabsRouterWidgetState>? nestedRouterKey;
 
   @override
   DockPage<T> createPage<T>([Object? arguments]) {

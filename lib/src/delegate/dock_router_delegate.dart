@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:dock_router/dock_router.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with ChangeNotifier, PopNavigatorRouterDelegateMixin implements RoutingUtilities {
-  DockRouterDelegate(this._router) : _routes = _router.routes {
+  DockRouterDelegate(this._router)
+      : _routes = _router.routes,
+        _tabIndex = null {
     final initialPagesIterable = _routes().where((element) => element.initial);
 
     assert(initialPagesIterable.length == 1, 'There should be exactly one initial page');
@@ -14,8 +15,20 @@ class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with Cha
     addListener(_rebuildNavigator);
   }
 
-  DockRouterDelegate.nested(this._router, {RouteConfigurationBase? initial}) : _routes = _router.routes {
+  DockRouterDelegate.nested(this._router, {RouteConfigurationBase? initial})
+      : _routes = _router.routes,
+        _tabIndex = null {
     _history.add(initial?.createPage() ?? _routes().first.createPage());
+    addListener(_rebuildNavigator);
+  }
+
+  DockRouterDelegate.tab(
+    this._router, {
+    required int index,
+    required RouteConfigurationBase initial,
+  })  : _routes = _router.routes,
+        _tabIndex = index {
+    _history.add(initial.createPage());
     addListener(_rebuildNavigator);
   }
 
@@ -34,6 +47,7 @@ class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with Cha
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
   final List<RouteConfigurationBase> Function() _routes;
   final _dockNavigatorStateKey = GlobalKey<DockNavigatorState>();
+  final int? _tabIndex;
 
   @override
   void dispose() {
@@ -48,6 +62,7 @@ class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with Cha
     return DockNavigator(
       key: _dockNavigatorStateKey,
       router: _router,
+      navIndex: _tabIndex,
       navigatorKey: _navigatorKey,
       onPopPage: (route, result) {
         if (_history.length == 1) {
@@ -142,7 +157,7 @@ class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with Cha
         _history.removeLast().completePop(result);
         notifyListeners();
       });
-      return SynchronousFuture(true);
+      return true;
     } else {
       if (onExitCallback is Future<bool> Function(BuildContext)) {
         final popResult = await onExitCallback(_navigatorKey.currentContext!);
@@ -165,9 +180,9 @@ class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with Cha
             page.completePop(result);
             notifyListeners();
           });
-          return SynchronousFuture(true);
+          return true;
         } else {
-          return SynchronousFuture(false);
+          return false;
         }
       }
     }
@@ -193,7 +208,7 @@ class DockRouterDelegate extends RouterDelegate<RouteConfigurationBase> with Cha
   @override
   Future<void> popBelow() async {
     final length = _history.length;
-    if (length <= 1) return SynchronousFuture(null);
+    if (length <= 1) return;
     while (length > 1) {
       final previousIndexOfLastItem = length - 2;
       final popResult = await _history[previousIndexOfLastItem].onExit?.call(_navigatorKey.currentContext!) ?? true;

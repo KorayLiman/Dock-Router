@@ -45,7 +45,7 @@ class TabsBuilderState extends State<TabsBuilder> {
   @override
   void initState() {
     _parentRouter = context.router as DockRouter;
-    _childrenTabRoutes = _parentRouter.routes().firstWhere((element) => element.name == _parentRouter.currentRoute.name).children.where((element) => element.tabIndex != null);
+    _childrenTabRoutes = _parentRouter.routes().firstWhere((element) => element.name == _parentRouter.currentRoute.name).children.toList();
     _tabs = _childrenTabRoutes.map((e) => e.createPage<Object>()).toList();
     _indexBasedTabInitialization = Map.fromEntries(
       _tabs.map(
